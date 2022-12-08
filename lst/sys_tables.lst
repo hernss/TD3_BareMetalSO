@@ -1,0 +1,51 @@
+     1                                  USE16
+     2                                  section .systables_rom
+     3                                  
+     4                                  GLOBAL CS_SEL
+     5                                  GLOBAL DS_SEL
+     6                                  GLOBAL _gdtr
+     7                                  
+     8                                  GDT:
+     9                                  NULL_SEL equ $-GDT
+    10 00000000 0000000000000000            dq 0x0
+    11                                  CS_SEL equ $-GDT
+    12 00000008 FFFF                        dw 0xFFFF       ;Lmit 15-0
+    13 0000000A 0000                        dw 0x0000       ;Base 15-0
+    14 0000000C 00                          db 0x00         ;Base 23-16
+    15 0000000D 99                          db 10011001b    ;Atributos
+    16                                                      ;P   = 1
+    17                                                      ;DPL = 00
+    18                                                      ;S   = 1
+    19                                                      ;D/C = 1
+    20                                                      ;ED/C= 0
+    21                                                      ;R/W = 0
+    22                                                      ;A   = 1
+    23 0000000E CF                          db 11001111b    ;Limite 19-16 y atributos
+    24                                                      ;G   = 1
+    25                                                      ;D/B = 1
+    26                                                      ;L   = 0
+    27                                                      ;AVL = 0
+    28 0000000F 00                          db 0x00         ;Base 31-24
+    29                                  DS_SEL equ $-GDT
+    30 00000010 FFFF                        dw 0xFFFF       ;Lmit 15-0
+    31 00000012 0000                        dw 0x0000       ;Base 15-0
+    32 00000014 00                          db 0x00         ;Base 23-16
+    33 00000015 92                          db 10010010b    ;Atributos
+    34                                                      ;P   = 1
+    35                                                      ;DPL = 00
+    36                                                      ;S   = 1
+    37                                                      ;D/C = 0
+    38                                                      ;ED/C= 0
+    39                                                      ;R/W = 1
+    40                                                      ;A   = 0
+    41 00000016 CF                          db 11001111b    ;Limite 19-16 y atributos
+    42                                                      ;G   = 1
+    43                                                      ;D/B = 1
+    44                                                      ;L   = 0
+    45                                                      ;AVL = 0
+    46 00000017 00                          db 0x00         ;Base 31-24
+    47                                  GDT_LENGTH equ $-GDT
+    48                                  
+    49                                  _gdtr:
+    50 00000018 1700                        dw GDT_LENGTH-1
+    51 0000001A 00060F00                    dd 0x000F0600

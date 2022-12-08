@@ -1,0 +1,24 @@
+Modificacion para separar el contexto de MMX en cada tarea protegido por paginacion
+
+Como primera medida se elimino la estructura que estaba en pagina de kernel donde se guardan todos los
+contexto mmx juntos y se opto por implementar un bloque de 512 bytes donde cada tarea lo va a tener mapeado
+fisicamente en la direccion 0x00301000 0x00401000 0x00501000 0x00601000 para la tarea 1 2 3 y 4 respectivamente
+Este bloque de memoria va a tener para todas las tareas la misma direccion vma en 0x01202000
+
+Se modifico la estructura donde se almacena el contexto de la tarea y se le agrego un flag de uso de mmx. Este
+flag se inicializa en 0. Cuando dentro de la tarea se produce la excepcion NM en el handler al recargar el
+contexto mmx se levanta este flag. Este flag es una señalizacion para que cuando se guarde el contexto de la
+tarea tambien se guarde el contexto mmx. Para evitar conflictos con la primera vez que se llame la excepcion NM
+se pre inicializo las estructuras de contexto de mmx, ya que no hay ningun mecanismo para detectar si es la primera vez
+La inicializacion de esta estructura se hace en main.s linea 431 antes de activar la paginacion ya que como todos los 
+bloques tiene la misma direccion virtual no se pueden mapear todos juntos en memoria, es por esto que se hace en ese momento
+y se accede a ellos mediante su direccion fisica.
+
+Siguiendo el hilo de ejecucion, las tareas que eventualmente recuperen contexto de mmx es porque lo estan usando, asi que es de 
+suponer que cuando terminen su ejecucion y se cambie el contexto a la siguiente tarea va a ser necesario guardar este contexto.
+Entonces al momento de abandonar por completo la tarea, dentro de la funcion save_context (main.s linea 594) se revisa el flag de mmx y si esta seteado 
+guarda el contexto en memoria. Esta operacion se hace en esta situacion ya que es la ultima vez que el cr3 de la tarea actual 
+esta cargado, luego cuando entre load_context y cargue el contexto de la tarea nueva ya se va a cargar la paginacion de la tarea siguiente.
+
+Para completar se le asigno a cada cr3 de cada tarea la paginacion para su propia pagina donde se va a guardar el contexto mmx con nivel de privilegio de kernel, 
+ya que es el kernel el encargado de salvar su contexto y la tarea no tiene porque acceder a estos datos.

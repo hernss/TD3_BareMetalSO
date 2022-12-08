@@ -1,0 +1,161 @@
+     1                                  USE32
+     2                                  
+     3                                  section .interrupt_code
+     4                                  
+     5                                  EXTERN mostrar_suma_sw
+     6                                  EXTERN mostrar_suma_sq
+     7                                  EXTERN mostrar_promedio
+     8                                  EXTERN flag_change_context
+     9                                  EXTERN printlog
+    10                                  
+    11                                  EXTERN read_bytes_count
+    12                                  EXTERN read_buffer
+    13                                  EXTERN table_offset
+    14                                  
+    15                                  INT_80_HLT          equ 1
+    16                                  INT_80_TASK_SWITCH  equ 2
+    17                                  INT_80_SHOW_ADD_SW  equ 3
+    18                                  INT_80_SHOW_ADD_SQ  equ 4
+    19                                  INT_80_SHOW_AVG     equ 5
+    20                                  INT_80_PRINT        equ 6
+    21                                  INT_80_READ         equ 7
+    22                                  INT_80_READ_COUNT   equ 8
+    23                                  
+    24                                  BASE_TABLA_DIGITOS  equ 0x01210000
+    25                                  
+    26                                  
+    27                                  GLOBAL handler_INT80
+    28                                  
+    29                                  handler_INT80:
+    30                                  
+    31                                  ;    push eax                       ;no puedo pushearlo porque lo voy a usar para devolver el resultado
+    32 00000000 53                          push ebx
+    33 00000001 51                          push ecx
+    34 00000002 52                          push edx
+    35 00000003 57                          push edi
+    36                                  
+    37 00000004 FB                          sti
+    38                                  
+    39 00000005 83F801                      cmp eax, INT_80_HLT
+    40 00000008 7506                        jne .test_ts
+    41 0000000A F4                          hlt                             ;Para que las tareas de nivel 3 se puedan dormir
+    42 0000000B E9D3000000                  jmp .end
+    43                                  .test_ts:
+    44 00000010 83F802                      cmp eax, INT_80_TASK_SWITCH
+    45 00000013 750D                        jne .test_add_sw
+    46 00000015 BB[00000000]                mov ebx, flag_change_context
+    47 0000001A C60301                      mov byte [ebx], 1               ;Fuerzo el cambio de contexto para que la tarea que esta ejecutando sea sacada de contexto en el proximo timertick
+    48                                  
+    49 0000001D E9C1000000                  jmp .end
+    50                                  .test_add_sw:
+    51 00000022 83F803                      cmp eax, INT_80_SHOW_ADD_SW
+    52 00000025 750E                        jne .test_add_sq
+    53                                      
+    54 00000027 55                          push ebp                        ;ENTER
+    55 00000028 89E5                        mov ebp, esp
+    56 0000002A E8(00000000)                call mostrar_suma_sw            ;muestro en pantalla la suma satured word
+    57 0000002F C9                          leave
+    58                                  
+    59 00000030 E9AE000000                  jmp .end
+    60                                  .test_add_sq:
+    61 00000035 83F804                      cmp eax, INT_80_SHOW_ADD_SQ
+    62 00000038 750E                        jne .test_avg
+    63                                      
+    64 0000003A 55                          push ebp                        ;ENTER
+    65 0000003B 89E5                        mov ebp, esp
+    66 0000003D E8(00000000)                call mostrar_suma_sq            ;muestro en pantalla la suma satured qword
+    67 00000042 C9                          leave
+    68                                  
+    69 00000043 E99B000000                  jmp .end
+    70                                  .test_avg:
+    71 00000048 83F805                      cmp eax, INT_80_SHOW_AVG
+    72 0000004B 750E                        jne .test_print
+    73                                      
+    74 0000004D 55                          push ebp                        ;ENTER
+    75 0000004E 89E5                        mov ebp, esp
+    76 00000050 E8(00000000)                call mostrar_promedio           ;muestro en pantalla el promedio
+    77 00000055 C9                          leave
+    78                                  
+    79 00000056 E988000000                  jmp .end
+    80                                  .test_print:
+    81 0000005B 83F806                      cmp eax, INT_80_PRINT           ;PRINT EN PANTALLA: ebx trae el puntero al comienzo de la string
+    82 0000005E 750C                        jne .test_read
+    83 00000060 55                          push ebp                        ;ENTER
+    84 00000061 89E5                        mov ebp, esp
+    85 00000063 53                          push ebx
+    86 00000064 E8(00000000)                call printlog                   ;Escribo la cantidad de bytes que me pasaron por ECX del buffer EBX a la pantalla
+    87 00000069 C9                          leave
+    88                                  
+    89 0000006A EB77                        jmp .end
+    90                                  .test_read:
+    91 0000006C 83F807                      cmp eax, INT_80_READ
+    92 0000006F 7563                        jne .test_read_count
+    93                                      ;Leo la posicion de la tabla en ECX y almaceno en la direccion que me pasaron por EBX
+    94                                      ;Primero chequeo que EBX apunte a una direccion de usuario
+    95 00000071 89DA                        mov edx, ebx
+    96 00000073 81E20000C0FF                and edx, 0xFFC00000     ;Calculo el DTP offset
+    97 00000079 C1EA16                      shr edx, 22             ;Ahora tengo en edx la posicion de la DTPE
+    98                                  
+    99 0000007C C1E202                      shl edx, 2              ;Multiplico por 4 para calcular el offset en RAM
+   100 0000007F 0F20DF                      mov edi, cr3
+   101 00000082 01D7                        add edi, edx            ;Se lo sumo al CR3
+   102 00000084 8B17                        mov edx, [edi]
+   103 00000086 85D2                        test edx, edx           ;Primero me fijo si hay DTPE disponible.. sino es porque no esta paginada la TP y adios
+   104 00000088 745E                        jz .error
+   105                                  
+   106 0000008A F7C204000000                test edx, 0x4           ;Me fijo si la DTPE es de usuario.. sino adios
+   107 00000090 7456                        jz .error
+   108                                  
+   109 00000092 81E200F0FFFF                and edx, 0xFFFFF000     ;Limpio los flags y voy a buscar la TP
+   110 00000098 89D7                        mov edi, edx
+   111                                  
+   112 0000009A 89DA                        mov edx, ebx
+   113 0000009C 81E200F03F00                and edx, 0x003FF000     ;Calculo el TP offset
+   114 000000A2 C1EA0C                      shr edx, 12             ;Ahora tengo en edx la posicion de la TPE
+   115                                  
+   116 000000A5 C1E202                      shl edx, 2              ;Multiplico por 4 para calcular el offset en RAM    
+   117 000000A8 01D7                        add edi, edx            ;Se lo sumo a la base de la TP que la tengo guardada en edi
+   118                                  
+   119 000000AA 8B17                        mov edx, [edi]
+   120 000000AC 85D2                        test edx, edx           ;Primero me fijo si hay TPE disponible.. sino es porque no esta paginada la Pagina y adios
+   121 000000AE 7438                        jz .error
+   122 000000B0 F7C204000000                test edx, 0x4           ;Me fijo si la TPE es de usuario.. sino adios
+   123 000000B6 7430                        jz .error
+   124                                  
+   125                                      ;Si llegue hasta aca es porque esta todo ok..
+   126                                  
+   127 000000B8 B800002101                  mov eax, BASE_TABLA_DIGITOS
+   128 000000BD 31D2                        xor edx, edx                    ;Limpio EDX
+   129 000000BF 6689CA                      mov dx, cx
+   130 000000C2 66C1E203                    shl dx, 3                       ;Multiplico la posicion por 8 para calcular el offset en memoria
+   131 000000C6 01D0                        add eax, edx                    ;Sumo el offset a la base de la tabla
+   132 000000C8 8B08                        mov ecx, [eax]                  ;Leo el dword menos significativo
+   133 000000CA 890B                        mov [ebx], ecx
+   134 000000CC 8B4804                      mov ecx, [eax+4]
+   135 000000CF 894B04                      mov [ebx+4], ecx                ;Leo el dword mas significativo
+   136 000000D2 EB0F                        jmp .end
+   137                                  
+   138                                  .test_read_count:
+   139 000000D4 83F808                      cmp eax, INT_80_READ_COUNT
+   140 000000D7 750A                        jne .end
+   141 000000D9 B8[00000000]                mov eax, table_offset
+   142 000000DE 668B00                      mov word ax, [eax]
+   143 000000E1 EB00                        jmp .end
+   144                                  
+   145                                  
+   146                                  .end:
+   147 000000E3 5F                          pop edi
+   148 000000E4 5A                          pop edx
+   149 000000E5 59                          pop ecx
+   150 000000E6 5B                          pop ebx
+   151                                  ;    pop eax
+   152 000000E7 CF                          iret
+   153                                  
+   154                                  .error:
+   155 000000E8 B8FFFFFFFF                  mov eax, -1
+   156 000000ED 5F                          pop edi
+   157 000000EE 5A                          pop edx
+   158 000000EF 59                          pop ecx
+   159 000000F0 5B                          pop ebx
+   160                                  ;    pop eax
+   161 000000F1 CF                          iret

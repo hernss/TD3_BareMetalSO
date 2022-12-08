@@ -1,0 +1,182 @@
+     1                                  USE16
+     2                                  %include "./inc/x86_types.h"
+     1                              <1> ;/* Basado en u_boot */
+     2                              <1> %ifndef _ASM_X86_PROCESSOR_FLAGS_H
+     3                              <1>    %define _ASM_X86_PROCESSOR_FLAGS_H  0
+     4                              <1> ;/* Various flags defined: can be included from assembler. */
+     5                              <1> 
+     6                              <1> ;/*
+     7                              <1> ; * EFLAGS bits
+     8                              <1> ; */
+     9                              <1> %define X86_EFLAGS_CF	0x00000001 ;/* Carry Flag */
+    10                              <1> %define X86_EFLAGS_PF	0x00000004 ;/* Parity Flag */
+    11                              <1> %define X86_EFLAGS_AF	0x00000010 ;/* Auxillary carry Flag */
+    12                              <1> %define X86_EFLAGS_ZF	0x00000040 ;/* Zero Flag */
+    13                              <1> %define X86_EFLAGS_SF	0x00000080 ;/* Sign Flag */
+    14                              <1> %define X86_EFLAGS_TF	0x00000100 ;/* Trap Flag */
+    15                              <1> %define X86_EFLAGS_IF	0x00000200 ;/* Interrupt Flag */
+    16                              <1> %define X86_EFLAGS_DF	0x00000400 ;/* Direction Flag */
+    17                              <1> %define X86_EFLAGS_OF	0x00000800 ;/* Overflow Flag */
+    18                              <1> %define X86_EFLAGS_IOPL	0x00003000 ;/* IOPL mask */
+    19                              <1> %define X86_EFLAGS_NT	0x00004000 ;/* Nested Task */
+    20                              <1> %define X86_EFLAGS_RF	0x00010000 ;/* Resume Flag */
+    21                              <1> %define X86_EFLAGS_VM	0x00020000 ;/* Virtual Mode */
+    22                              <1> %define X86_EFLAGS_AC	0x00040000 ;/* Alignment Check */
+    23                              <1> %define X86_EFLAGS_VIF	0x00080000 ;/* Virtual Interrupt Flag */
+    24                              <1> %define X86_EFLAGS_VIP	0x00100000 ;/* Virtual Interrupt Pending */
+    25                              <1> %define X86_EFLAGS_ID	0x00200000 ;/* CPUID detection flag */
+    26                              <1> 
+    27                              <1> ;/*
+    28                              <1> ; * Basic CPU control in CR0
+    29                              <1> ; */
+    30                              <1> %define X86_CR0_PE	0x00000001 ;/* Protection Enable */
+    31                              <1> %define X86_CR0_MP	0x00000002 ;/* Monitor Coprocessor */
+    32                              <1> %define X86_CR0_EM	0x00000004 ;/* Emulation */
+    33                              <1> %define X86_CR0_TS	0x00000008 ;/* Task Switched */
+    34                              <1> %define X86_CR0_ET	0x00000010 ;/* Extension Type */
+    35                              <1> %define X86_CR0_NE	0x00000020 ;/* Numeric Error */
+    36                              <1> %define X86_CR0_WP	0x00010000 ;/* Write Protect */
+    37                              <1> %define X86_CR0_AM	0x00040000 ;/* Alignment Mask */
+    38                              <1> %define X86_CR0_NW	0x20000000 ;/* Not Write-through */
+    39                              <1> %define X86_CR0_CD	0x40000000 ;/* Cache Disable */
+    40                              <1> %define X86_CR0_PG	0x80000000 ;/* Paging */
+    41                              <1> 
+    42                              <1> ;/*
+    43                              <1> ;* Paging options in CR3
+    44                              <1> ;*/
+    45                              <1> %define X86_CR3_PWT	0x00000008 ;/* Page Write Through;*/
+    46                              <1> %define X86_CR3_PCD	0x00000010 ;/* Page Cache Disable;*/
+    47                              <1> 
+    48                              <1> ;/*
+    49                              <1> ;* Intel CPU features in CR4
+    50                              <1> ;*/
+    51                              <1> %define X86_CR4_VME	      0x00000001 ;/* enable vm86 extensions;*/
+    52                              <1> %define X86_CR4_PVI	      0x00000002 ;/* virtual interrupts flag enable;*/
+    53                              <1> %define X86_CR4_TSD	      0x00000004 ;/* disable time stamp at ipl 3;*/
+    54                              <1> %define X86_CR4_DE	      0x00000008 ;/* enable debugging extensions;*/
+    55                              <1> %define X86_CR4_PSE	      0x00000010 ;/* enable page size extensions;*/
+    56                              <1> %define X86_CR4_PAE	      0x00000020 ;/* enable physical address extensions;*/
+    57                              <1> %define X86_CR4_MCE	      0x00000040 ;/* Machine check enable;*/
+    58                              <1> %define X86_CR4_PGE	      0x00000080 ;/* enable global pages;*/
+    59                              <1> %define X86_CR4_PCE	      0x00000100 ;/* enable performance counters at ipl 3;*/
+    60                              <1> %define X86_CR4_OSFXSR	   0x00000200 ;/* enable fast FPU save and restore;*/
+    61                              <1> %define X86_CR4_OSXMMEXCPT 0x00000400 ;/* enable unmasked SSE exceptions;*/
+    62                              <1> %define X86_CR4_VMXE	      0x00002000 ;/* enable VMX virtualization;*/
+    63                              <1> %define X86_CR4_OSXSAVE    0x00040000 ;/* enable xsave and xrestore;*/
+    64                              <1> 
+    65                              <1> ;/*
+    66                              <1> ;* x86-64 Task Priority Register, CR8
+    67                              <1> ;*/
+    68                              <1> %define X86_CR8_TPR	      0x0000000F ;/* task priority register;*/
+    69                              <1> 
+    70                              <1> ;/*
+    71                              <1> ;* AMD and Transmeta use MSRs for configuration; see <asm/msr-index.h>
+    72                              <1> ;*/
+    73                              <1> 
+    74                              <1> ;/*
+    75                              <1> ;*      NSC/Cyrix CPU configuration register indexes
+    76                              <1> ;*/
+    77                              <1> %define CX86_PCR0	         0x20
+    78                              <1> %define CX86_GCR	         0xb8
+    79                              <1> %define CX86_CCR0	         0xc0
+    80                              <1> %define CX86_CCR1	         0xc1
+    81                              <1> %define CX86_CCR2	         0xc2
+    82                              <1> %define CX86_CCR3	         0xc3
+    83                              <1> %define CX86_CCR4	         0xe8
+    84                              <1> %define CX86_CCR5	         0xe9
+    85                              <1> %define CX86_CCR6	         0xea
+    86                              <1> %define CX86_CCR7	         0xeb
+    87                              <1> %define CX86_PCR1	         0xf0
+    88                              <1> %define CX86_DIR0	         0xfe
+    89                              <1> %define CX86_DIR1	         0xff
+    90                              <1> %define CX86_ARR_BASE	   0xc4
+    91                              <1> %define CX86_RCR_BASE	   0xdc
+    92                              <1> 
+    93                              <1> ;/*
+    94                              <1> ;* Intel CPUID features
+    95                              <1> ;*/
+    96                              <1> %define X86_CPUID_EXT_FUNC 0x80000000  ;/* Maximum Input Value for Extended Function CPUID Informationn;*/
+    97                              <1> %define X86_CPUID_EXT_FEAT 0x80000001  ;/* Extended Processor Signature and Feature Bits;*/
+    98                              <1> %define X86_CPUID_EXEC_DIS 20          ;/* Execute Disable Bit available;*/
+    99                              <1> %define X86_CPUID_1G_PAG   26          ;/* 1-GByte pages are available;*/
+   100                              <1> %define X86_CPUID_I64      29          ;/*Intel 64 Architecture available*/
+   101                              <1> 
+   102                              <1> %define X86_CPUID_FPU      0x00000001
+   103                              <1> %define X86_CPUID_MMX      0x00800000
+   104                              <1> %define X86_CPUID_FXSR     0x01000000
+   105                              <1> %define X86_CPUID_SSE      0x02000000
+   106                              <1> %define X86_CPUID_SSE2     0x04000000
+   107                              <1> 
+   108                              <1> %define x86_CPUID_GenuineIntel_EBX 0x756E6547
+   109                              <1> %define x86_CPUID_GenuineIntel_ECX 0x6C65746E
+   110                              <1> %define x86_CPUID_GenuineIntel_EDX 0x49656E69
+   111                              <1> 
+   112                              <1> %ifdef __KERNEL__
+   113                              <1>    %ifdef CONFIG_VM86
+   114                              <1>       %define X86_VM_MASK	X86_EFLAGS_VM
+   115                              <1>    %else
+   116                              <1>       %define X86_VM_MASK	0 ;/* No VM86 support;*/
+   117                              <1>    %endif
+   118                              <1> %endif
+   119                              <1> 
+   120                              <1> %endif ;/* _ASM_X86_PROCESSOR_FLAGS_H;*/
+     3                                  
+     4                                  
+     5                                  GLOBAL reset
+     6                                  
+     7                                  EXTERN CS_SEL
+     8                                  EXTERN DS_SEL
+     9                                  EXTERN _gdtr
+    10                                  EXTERN start32_launcher
+    11                                  EXTERN VGA_Init
+    12                                  
+    13                                  
+    14                                  section .ROM_init
+    15                                  start16:
+    16 00000000 66A900000000                test eax, 0x0
+    17 00000006 7534                        jne fault_end
+    18                                  
+    19 00000008 6631C0                      xor eax, eax
+    20 0000000B 0F22D8                      mov cr3, eax
+    21                                  
+    22 0000000E 8CC8                        mov ax, cs
+    23 00000010 8ED8                        mov ds, ax
+    24                                  
+    25                                  
+    26 00000012 BCFFFF                      mov sp, 0xFFFF   ;Inicializo el stack
+    27 00000015 E8(0000)                    call VGA_Init
+    28                                  
+    29                                  
+    30                                  
+    31                                      ;Deshabilito la cache
+    32 00000018 0F20C0                      mov eax, cr0 
+    33 0000001B 660D00000060                or  eax, (X86_CR0_NW | X86_CR0_CD)
+    34 00000021 0F22C0                      mov cr0, eax
+    35 00000024 0F09                        wbinvd
+    36                                  
+    37 00000026 0F0116[0000]                lgdt [_gdtr]    ;Cargo la direccion de la gdt en el registro gdtr
+    38                                  
+    39                                      ; Establecer el micro en Modo Protegido
+    40                                  
+    41 0000002B 0F01E0                      smsw ax
+    42 0000002E 83C801                      or   ax, X86_CR0_PE
+    43 00000031 0F01F0                      lmsw ax
+    44                                  
+    45                                  
+    46 00000034 66EA[00000000]-             jmp dword CS_SEL:start32_launcher
+    46 0000003A [0000]             
+    47                                  
+    48                                  fault_end:
+    49 0000003C F4                          hlt
+    50 0000003D EBFD                        jmp fault_end
+    51                                  
+    52                                  section .resetVector
+    53                                  
+    54                                  reset:
+    55 00000000 FA                          cli
+    56 00000001 FC                          cld
+    57 00000002 E9(0000)                    jmp start16
+    58                                  halted:
+    59 00000005 F4                          hlt 
+    60 00000006 EBFD                        jmp halted
+    61                                  end:

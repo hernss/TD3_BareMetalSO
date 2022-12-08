@@ -1,0 +1,532 @@
+
+Configuración de la Memoria
+
+Nombre           Origen             Longitud           Atributos
+ram              0x0000000000000000 0x00000000ffff0000 !x
+rom              0x00000000ffff0000 0x000000000000ffff xr
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Guión del enlazador y mapa de memoria
+
+                0x000000001fff8000                __STACK_START_32 = 0x1fff8000
+                0x000000001fff8fff                __STACK_END_32 = 0x1fff8fff
+                0x00000000000003ff                __STACK_SIZE_32 = ((__STACK_END_32 - __STACK_START_32) / 0x4)
+                0x00000000000b8000                __VIDEO_RAM_PHI = 0xb8000
+                0x0000000000100000                __INTERRUPTS_PHI = 0x100000
+                0x0000000000200000                __DATOS_PHI = 0x200000
+                0x0000000000201000                __DATOS_USER_PHI = 0x201000
+                0x0000000000210000                __DIGITOS_PHI = 0x210000
+                0x0000000000220000                __KERNEL_32_PHI = 0x220000
+                0x0000000000301000                __MMX_DATA_T1_PHI = 0x301000
+                0x0000000000300000                __CONTEXT_PAGE_TAREA_1_PHI = 0x300000
+                0x0000000000310000                __TAREA_1_TEXT_PHI = 0x310000
+                0x0000000000320000                __TAREA_1_BSS_PHI = 0x320000
+                0x0000000000330000                __TAREA_1_DATA_PHI = 0x330000
+                0x0000000000340000                __TAREA_1_RODATA_PHI = 0x340000
+                0x0000000000401000                __MMX_DATA_T2_PHI = 0x401000
+                0x0000000000400000                __CONTEXT_PAGE_TAREA_2_PHI = 0x400000
+                0x0000000000410000                __TAREA_2_TEXT_PHI = 0x410000
+                0x0000000000420000                __TAREA_2_BSS_PHI = 0x420000
+                0x0000000000430000                __TAREA_2_DATA_PHI = 0x430000
+                0x0000000000440000                __TAREA_2_RODATA_PHI = 0x440000
+                0x0000000000501000                __MMX_DATA_T3_PHI = 0x501000
+                0x0000000000500000                __CONTEXT_PAGE_TAREA_3_PHI = 0x500000
+                0x0000000000510000                __TAREA_3_TEXT_PHI = 0x510000
+                0x0000000000520000                __TAREA_3_BSS_PHI = 0x520000
+                0x0000000000530000                __TAREA_3_DATA_PHI = 0x530000
+                0x0000000000540000                __TAREA_3_RODATA_PHI = 0x540000
+                0x0000000000601000                __MMX_DATA_T4_PHI = 0x601000
+                0x0000000000600000                __CONTEXT_PAGE_TAREA_4_PHI = 0x600000
+                0x0000000000610000                __TAREA_4_TEXT_PHI = 0x610000
+                0x0000000000620000                __TAREA_4_BSS_PHI = 0x620000
+                0x0000000000630000                __TAREA_4_DATA_PHI = 0x630000
+                0x0000000000640000                __TAREA_4_RODATA_PHI = 0x640000
+                0x000000000a000000                __RAMDOM_PAGE_START = 0xa000000
+                0x000000001fff8000                __PILA_KERNEL_PHI = 0x1fff8000
+                0x000000002ffff000                __TAREA_1_PILA_PHI = 0x2ffff000
+                0x0000000030000000                __TAREA_2_PILA_PHI = 0x30000000
+                0x0000000030001000                __TAREA_3_PILA_PHI = 0x30001000
+                0x0000000030002000                __TAREA_4_PILA_PHI = 0x30002000
+                0x000000002fff4000                __TAREA_1_PILA_KERNEL_PHI = 0x2fff4000
+                0x000000002fff5000                __TAREA_2_PILA_KERNEL_PHI = 0x2fff5000
+                0x000000002fff6000                __TAREA_3_PILA_KERNEL_PHI = 0x2fff6000
+                0x000000002fff7000                __TAREA_4_PILA_KERNEL_PHI = 0x2fff7000
+                0x0000000000800000                __TAREA_1_CR3 = 0x800000
+                0x0000000000900000                __TAREA_2_CR3 = 0x900000
+                0x0000000001000000                __TAREA_3_CR3 = 0x1000000
+                0x0000000001100000                __TAREA_4_CR3 = 0x1100000
+                0x0000000000010000                __KERNEL_CR3 = 0x10000
+                0x00000000ffff0000                __INIT_16_PHI = 0xffff0000
+                0x00000000ffff0300                __SYS_TABLES_PHI = 0xffff0300
+                0x00000000ffff0400                __FUNCTIONS_ROM_PHI = 0xffff0400
+                0x00000000ffff5000                __UTILS_PHI = 0xffff5000
+                0x00000000fffffff0                __RESET_PHI = 0xfffffff0
+                0x0000000000000000                __SYS_TABLES_C_VMA = 0x0
+                0x0000000000010000                __PAGTABLES_VMA = 0x10000
+                0x0000000000010000                __VIDEO_RAM_VMA = 0x10000
+                0x0000000000100000                __INTERRUPTS_VMA = 0x100000
+                0x0000000001200000                __DATOS_VMA = 0x1200000
+                0x0000000001201000                __DATOS_USER_VMA = 0x1201000
+                0x0000000001202000                __MMX_DATA_VMA = 0x1202000
+                0x0000000001210000                __DIGITOS_VMA = 0x1210000
+                0x0000000001220000                __KERNEL_32_VMA = 0x1220000
+                0x0000000001300000                __CONTEXT_PAGE_TAREA_1_VMA = 0x1300000
+                0x0000000001310000                __TAREA_1_TEXT = 0x1310000
+                0x0000000001320000                __TAREA_1_BSS = 0x1320000
+                0x0000000001330000                __TAREA_1_DATA = 0x1330000
+                0x0000000001340000                __TAREA_1_RODATA = 0x1340000
+                0x0000000001400000                __CONTEXT_PAGE_TAREA_2_VMA = 0x1400000
+                0x0000000001410000                __TAREA_2_TEXT = 0x1410000
+                0x0000000001420000                __TAREA_2_BSS = 0x1420000
+                0x0000000001430000                __TAREA_2_DATA = 0x1430000
+                0x0000000001440000                __TAREA_2_RODATA = 0x1440000
+                0x0000000001500000                __CONTEXT_PAGE_TAREA_3_VMA = 0x1500000
+                0x0000000001510000                __TAREA_3_TEXT = 0x1510000
+                0x0000000001520000                __TAREA_3_BSS = 0x1520000
+                0x0000000001530000                __TAREA_3_DATA = 0x1530000
+                0x0000000001540000                __TAREA_3_RODATA = 0x1540000
+                0x0000000001600000                __CONTEXT_PAGE_TAREA_4_VMA = 0x1600000
+                0x0000000001610000                __TAREA_4_TEXT = 0x1610000
+                0x0000000001620000                __TAREA_4_BSS = 0x1620000
+                0x0000000001630000                __TAREA_4_DATA = 0x1630000
+                0x0000000001640000                __TAREA_4_RODATA = 0x1640000
+                0x000000001fff8000                __PILA_KERNEL = 0x1fff8000
+                0x000000000078f000                __TAREA_1_PILA = 0x78f000
+                0x0000000000790000                __TAREA_2_PILA = 0x790000
+                0x0000000000791000                __TAREA_3_PILA = 0x791000
+                0x0000000000792000                __TAREA_4_PILA = 0x792000
+                0x000000002fff4000                __TAREA_1_PILA_KERNEL_VMA = 0x2fff4000
+                0x000000002fff5000                __TAREA_2_PILA_KERNEL_VMA = 0x2fff5000
+                0x000000002fff6000                __TAREA_3_PILA_KERNEL_VMA = 0x2fff6000
+                0x000000002fff7000                __TAREA_4_PILA_KERNEL_VMA = 0x2fff7000
+                0x00000000ffff0000                __INIT_16_VMA = 0xffff0000
+                0x00000000ffff0600                __SYS_TABLES_VMA = 0xffff0600
+                0x00000000ffff2261                __UTILS_VMA = 0xffff5000
+                0x00000000fffffff0                __RESET_VMA = 0xfffffff0
+                0x00000000ffff0000                __INIT_16_LMA = 0xffff0000
+                0x00000000ffff0600                __SYS_TABLES_LMA = 0xffff0600
+                0x00000000ffff4000                __SYS_TABLES_C_LMA = 0xffff4000
+                0x00000000ffff7000                __TAREA_1_TEXT_LMA = 0xffff7000
+                0x00000000fffffff0                __RESET_LMA = 0xfffffff0
+
+.tablas_gdt_idt
+                0x0000000000000000      0x8c6 dirección de carga 0x00000000ffff4000
+ *(.systable_c)
+ .systable_c    0x0000000000000000       0xa8 ./obj/sys_tables_c.elf
+                0x0000000000000000                gdt
+                0x0000000000000030                _gdtr_c
+                0x0000000000000040                trueTSS
+ *(.interrupt_table_c)
+ *fill*         0x00000000000000a8       0x18 
+ .interrupt_table_c
+                0x00000000000000c0      0x806 ./obj/interrupts.elf
+                0x00000000000000c0                idt
+                0x00000000000008c0                _idtr_c
+                0x00000000ffff48c6                __INTERRUPTS_LMA = (LOADADDR (.tablas_gdt_idt) + SIZEOF (.tablas_gdt_idt))
+
+.interrupts     0x0000000000100000      0x98d dirección de carga 0x00000000ffff48c6
+ *(.interrupt_code)
+ .interrupt_code
+                0x0000000000100000       0x3c ./obj/functions_c.elf
+                0x0000000000100000                inb
+                0x0000000000100021                outb
+ .interrupt_code
+                0x000000000010003c      0x80f ./obj/int_handlers.elf
+                0x000000000010003c                handler_NM
+                0x00000000001000b7                handler_teclado
+                0x000000000010017f                handler_PIT0
+                0x000000000010034e                default_interrupt
+                0x0000000000100362                handler_AC
+                0x0000000000100376                handler_SS
+                0x000000000010038a                handler_UD
+                0x000000000010039e                handler_DF
+                0x00000000001003b2                handler_GP
+                0x00000000001003c6                handler_PF
+                0x00000000001004d7                print_error
+ .interrupt_code
+                0x000000000010084b       0xf2 ./obj/int_handlers_s.elf
+                0x000000000010084b                handler_INT80
+ *int_handlers*(.rodata)
+ *fill*         0x000000000010093d        0x3 
+ .rodata        0x0000000000100940       0x4d ./obj/int_handlers.elf
+                0x000000000000098d                __codigo_interrupts_size = SIZEOF (.interrupts)
+                0x00000000ffff5253                __KERNEL_32_LMA = (LOADADDR (.interrupts) + SIZEOF (.interrupts))
+
+.codigo_kernel32
+                0x0000000001220000     0x1b24 dirección de carga 0x00000000ffff5253
+ *(.kernel32)
+ .kernel32      0x0000000001220000       0x13 ./obj/main.elf
+                0x0000000001220000                kernel32_init
+ *(.functions_ram)
+ .functions_ram
+                0x0000000001220013      0x181 ./obj/main.elf
+                0x0000000001220013                save_context
+                0x00000000012200a7                load_context
+ .functions_ram
+                0x0000000001220194     0x10a7 ./obj/driver_vga.elf
+                0x0000000001220194                mostrar_suma_sq
+                0x00000000012202f5                mostrar_suma_sw
+                0x0000000001220456                mostrar_suma
+                0x00000000012205b4                mostrar_promedio
+                0x000000000122071a                check_list
+                0x000000000122076e                __print_list_item
+                0x00000000012209b6                add_progress
+                0x0000000001220a6c                print
+                0x0000000001220bfb                printXY
+                0x0000000001220c61                scroll
+                0x0000000001220cef                __scroll_log
+                0x0000000001220d7d                __scroll_input
+                0x0000000001220e42                clear
+                0x0000000001221182                __printline
+                0x00000000012211e9                printlog
+ .functions_ram
+                0x000000000122123b      0x324 ./obj/kbrd.elf
+                0x000000000122123b                init_keyboard
+                0x00000000012213d9                get_ascii
+                0x00000000012213f6                almacenar_buffer
+ .functions_ram
+                0x000000000122155f      0x5c5 ./obj/scheduler.elf
+                0x000000000122155f                inicializar_scheduler
+                0x00000000012219cd                change_context
+                0x0000000000001b24                __codigo_kernel32_size = SIZEOF (.codigo_kernel32)
+
+.tarea_1_text   0x0000000001310000      0x50f dirección de carga 0x00000000ffff7000
+ *tarea_1*(.text)
+ .text          0x0000000001310000      0x50f ./obj/tarea_1.elf
+                0x0000000001310000                leer_address
+                0x0000000001310098                Tarea_promedio
+                0x00000000013101a0                udivdi3
+                0x00000000013103e0                clzll
+                0x0000000001310478                ctzll
+                0x000000000000050f                __tarea_1_text_size = SIZEOF (.tarea_1_text)
+                0x00000000ffff750f                __TAREA_1_BSS_LMA = (LOADADDR (.tarea_1_text) + SIZEOF (.tarea_1_text))
+
+.tarea_1_bss    0x0000000001320000       0x14 dirección de carga 0x00000000ffff750f
+ *tarea_1*(.t1_bss)
+ .t1_bss        0x0000000001320000       0x10 ./obj/tarea_1.elf
+                0x0000000001320000                aux_t1
+                0x0000000001320008                acc_t1
+ *tarea_1*(.bss)
+ .bss           0x0000000001320010        0x4 ./obj/tarea_1.elf
+                0x0000000000000014                __tarea_1_bss_size = SIZEOF (.tarea_1_bss)
+                0x00000000ffff7523                __TAREA_1_DATA_LMA = (LOADADDR (.tarea_1_bss) + SIZEOF (.tarea_1_bss))
+
+.tarea_1_data   0x0000000001330000        0x0 dirección de carga 0x00000000ffff7523
+ *tarea_1*(.data)
+ .data          0x0000000001330000        0x0 ./obj/tarea_1.elf
+                0x0000000000000000                __tarea_1_data_size = SIZEOF (.tarea_1_data)
+                0x00000000ffff7523                __TAREA_1_RODATA_LMA = (LOADADDR (.tarea_1_data) + SIZEOF (.tarea_1_data))
+
+.tarea_1_rodata
+                0x0000000001340000        0x0 dirección de carga 0x00000000ffff7523
+ *tarea_1*(.rodata)
+                0x0000000000000000                __tarea_1_rodata_size = SIZEOF (.tarea_1_rodata)
+                0x00000000ffff7523                __TAREA_2_TEXT_LMA = (LOADADDR (.tarea_1_rodata) + SIZEOF (.tarea_1_rodata))
+
+.tarea_2_text   0x0000000001410000       0xf5 dirección de carga 0x00000000ffff7523
+ *tarea_2*(.text)
+ .text          0x0000000001410000       0xd7 ./obj/tarea_2.elf
+                0x0000000001410000                Tarea_suma1
+ *fill*         0x00000000014100d7        0x9 
+ .text          0x00000000014100e0       0x15 ./obj/tarea_2_s.elf
+                0x00000000014100e0                sum_sw
+                0x00000000000000f5                __tarea_2_text_size = SIZEOF (.tarea_2_text)
+                0x00000000ffff7618                __TAREA_2_BSS_LMA = (LOADADDR (.tarea_2_text) + SIZEOF (.tarea_2_text))
+
+.tarea_2_bss    0x0000000001420000       0x10 dirección de carga 0x00000000ffff7618
+ *tarea_2*(.t2_bss)
+ .t2_bss        0x0000000001420000       0x10 ./obj/tarea_2.elf
+                0x0000000001420000                aux_t2
+                0x0000000001420008                acc_t2
+                0x0000000000000010                __tarea_2_bss_size = SIZEOF (.tarea_2_bss)
+                0x00000000ffff7628                __TAREA_2_DATA_LMA = (LOADADDR (.tarea_2_bss) + SIZEOF (.tarea_2_bss))
+
+.tarea_2_data   0x0000000001430000        0x0 dirección de carga 0x00000000ffff7628
+ *tarea_2*(.data)
+ .data          0x0000000001430000        0x0 ./obj/tarea_2.elf
+                0x0000000000000000                __tarea_2_data_size = SIZEOF (.tarea_2_data)
+                0x00000000ffff7628                __TAREA_2_RODATA_LMA = (LOADADDR (.tarea_2_data) + SIZEOF (.tarea_2_data))
+
+.tarea_2_rodata
+                0x0000000001440000        0x0 dirección de carga 0x00000000ffff7628
+ *tarea_2*(.rodata)
+                0x0000000000000000                __tarea_2_rodata_size = SIZEOF (.tarea_2_rodata)
+                0x00000000ffff7628                __TAREA_3_TEXT_LMA = (LOADADDR (.tarea_2_rodata) + SIZEOF (.tarea_2_rodata))
+
+.tarea_3_text   0x0000000001510000       0xf5 dirección de carga 0x00000000ffff7628
+ *tarea_3*(.text)
+ .text          0x0000000001510000       0xd7 ./obj/tarea_3.elf
+                0x0000000001510000                Tarea_suma2
+ *fill*         0x00000000015100d7        0x9 
+ .text          0x00000000015100e0       0x15 ./obj/tarea_3_s.elf
+                0x00000000015100e0                sum_sq
+                0x00000000000000f5                __tarea_3_text_size = SIZEOF (.tarea_3_text)
+                0x00000000ffff771d                __TAREA_3_BSS_LMA = (LOADADDR (.tarea_3_text) + SIZEOF (.tarea_3_text))
+
+.tarea_3_bss    0x0000000001520000       0x10 dirección de carga 0x00000000ffff771d
+ *tarea_3*(.t3_bss)
+ .t3_bss        0x0000000001520000       0x10 ./obj/tarea_3.elf
+                0x0000000001520000                aux_t3
+                0x0000000001520008                acc_t3
+                0x0000000000000010                __tarea_3_bss_size = SIZEOF (.tarea_3_bss)
+                0x00000000ffff772d                __TAREA_3_DATA_LMA = (LOADADDR (.tarea_3_bss) + SIZEOF (.tarea_3_bss))
+
+.tarea_3_data   0x0000000001530000        0x0 dirección de carga 0x00000000ffff772d
+ *tarea_3*(.data)
+ .data          0x0000000001530000        0x0 ./obj/tarea_3.elf
+                0x0000000000000000                __tarea_3_data_size = SIZEOF (.tarea_3_data)
+                0x00000000ffff772d                __TAREA_3_RODATA_LMA = (LOADADDR (.tarea_3_data) + SIZEOF (.tarea_3_data))
+
+.tarea_3_rodata
+                0x0000000001540000        0x0 dirección de carga 0x00000000ffff772d
+ *tarea_3*(.rodata)
+                0x0000000000000000                __tarea_3_rodata_size = SIZEOF (.tarea_3_rodata)
+                0x00000000ffff772d                __TAREA_4_TEXT_LMA = (LOADADDR (.tarea_3_rodata) + SIZEOF (.tarea_3_rodata))
+
+.tarea_4_text   0x0000000001610000        0xa dirección de carga 0x00000000ffff772d
+ *tarea_4*(.text)
+ .text          0x0000000001610000        0xa ./obj/tarea_4.elf
+                0x0000000001610000                Tarea_idle
+                0x000000000000000a                __tarea_4_text_size = SIZEOF (.tarea_4_text)
+                0x00000000ffff7737                __TAREA_4_BSS_LMA = (LOADADDR (.tarea_4_text) + SIZEOF (.tarea_4_text))
+
+.tarea_4_bss    0x0000000001620000        0x0 dirección de carga 0x00000000ffff7737
+ *tarea_4*(.t4_bss)
+                0x0000000000000000                __tarea_4_bss_size = SIZEOF (.tarea_4_bss)
+                0x00000000ffff7737                __TAREA_4_DATA_LMA = (LOADADDR (.tarea_4_bss) + SIZEOF (.tarea_4_bss))
+
+.tarea_4_data   0x0000000001630000        0x0 dirección de carga 0x00000000ffff7737
+ *tarea_4*(.data)
+ .data          0x0000000001630000        0x0 ./obj/tarea_4.elf
+                0x0000000000000000                __tarea_4_data_size = SIZEOF (.tarea_4_data)
+                0x00000000ffff7737                __TAREA_4_RODATA_LMA = (LOADADDR (.tarea_4_data) + SIZEOF (.tarea_4_data))
+
+.tarea_4_rodata
+                0x0000000001640000        0x0 dirección de carga 0x00000000ffff7737
+ *tarea_4*(.rodata)
+                0x0000000000000000                __tarea_4_rodata_size = SIZEOF (.tarea_4_rodata)
+
+.codigo_init16  0x00000000ffff0000      0x190
+ *(.ROM_init)
+ .ROM_init      0x00000000ffff0000       0x3f ./obj/init.elf
+ *(.gateA20_code)
+ *(.note*)
+ .note.GNU-stack
+                0x00000000ffff003f        0x0 ./obj/functions_c.elf
+ *fill*         0x00000000ffff003f        0x1 
+ .note.gnu.property
+                0x00000000ffff0040       0x1c ./obj/functions_c.elf
+ .note.GNU-stack
+                0x00000000ffff005c        0x0 ./obj/int_handlers.elf
+ .note.gnu.property
+                0x00000000ffff005c       0x1c ./obj/int_handlers.elf
+ .note.GNU-stack
+                0x00000000ffff0078        0x0 ./obj/interrupts.elf
+ .note.gnu.property
+                0x00000000ffff0078       0x1c ./obj/interrupts.elf
+ .note.GNU-stack
+                0x00000000ffff0094        0x0 ./obj/sys_tables_c.elf
+ .note.gnu.property
+                0x00000000ffff0094       0x1c ./obj/sys_tables_c.elf
+ .note.GNU-stack
+                0x00000000ffff00b0        0x0 ./obj/driver_vga.elf
+ .note.gnu.property
+                0x00000000ffff00b0       0x1c ./obj/driver_vga.elf
+ .note.GNU-stack
+                0x00000000ffff00cc        0x0 ./obj/kbrd.elf
+ .note.gnu.property
+                0x00000000ffff00cc       0x1c ./obj/kbrd.elf
+ .note.GNU-stack
+                0x00000000ffff00e8        0x0 ./obj/tarea_1.elf
+ .note.gnu.property
+                0x00000000ffff00e8       0x1c ./obj/tarea_1.elf
+ .note.GNU-stack
+                0x00000000ffff0104        0x0 ./obj/tarea_2.elf
+ .note.gnu.property
+                0x00000000ffff0104       0x1c ./obj/tarea_2.elf
+ .note.GNU-stack
+                0x00000000ffff0120        0x0 ./obj/tarea_3.elf
+ .note.gnu.property
+                0x00000000ffff0120       0x1c ./obj/tarea_3.elf
+ .note.GNU-stack
+                0x00000000ffff013c        0x0 ./obj/tarea_4.elf
+ .note.gnu.property
+                0x00000000ffff013c       0x1c ./obj/tarea_4.elf
+ .note.GNU-stack
+                0x00000000ffff0158        0x0 ./obj/paging.elf
+ .note.gnu.property
+                0x00000000ffff0158       0x1c ./obj/paging.elf
+ .note.GNU-stack
+                0x00000000ffff0174        0x0 ./obj/scheduler.elf
+ .note.gnu.property
+                0x00000000ffff0174       0x1c ./obj/scheduler.elf
+                0x00000000ffff0190                __INIT_32_LMA = (LOADADDR (.codigo_init16) + SIZEOF (.codigo_init16))
+                0x00000000ffff0190                __INIT_32_VMA = __INIT_32_LMA
+
+.codigo_init32  0x00000000ffff0190      0x41c
+ *(.start32)
+ .start32       0x00000000ffff0190      0x41c ./obj/main.elf
+                0x00000000ffff0190                start32_launcher
+
+.data           0x00000000ffff0600       0x1e
+ *(.systables_rom)
+ .systables_rom
+                0x00000000ffff0600       0x1e ./obj/sys_tables_asm.elf
+                0x00000000ffff0618                _gdtr
+ .data          0x00000000ffff061e        0x0 ./obj/functions_c.elf
+ .data          0x00000000ffff061e        0x0 ./obj/int_handlers.elf
+ .data          0x00000000ffff061e        0x0 ./obj/interrupts.elf
+ .data          0x00000000ffff061e        0x0 ./obj/sys_tables_c.elf
+ .data          0x00000000ffff061e        0x0 ./obj/driver_vga.elf
+ .data          0x00000000ffff061e        0x0 ./obj/kbrd.elf
+ .data          0x00000000ffff061e        0x0 ./obj/paging.elf
+ .data          0x00000000ffff061e        0x0 ./obj/scheduler.elf
+                0x00000000ffff061e                __FUNCTIONS_ROM_LMA = (LOADADDR (.data) + SIZEOF (.data))
+                0x00000000ffff061e                __FUNCTIONS_ROM_VMA = __FUNCTIONS_ROM_LMA
+
+.functions_rom  0x00000000ffff061e     0x1874
+ *(.functions_rom*)
+ .functions_rom
+                0x00000000ffff061e       0x4e ./obj/functions_c.elf
+                0x00000000ffff061e                __fast_memcpy_rom
+ .functions_rom
+                0x00000000ffff066c      0x230 ./obj/interrupts.elf
+                0x00000000ffff066c                create_idt
+ .functions_rom
+                0x00000000ffff089c      0x1e8 ./obj/sys_tables_c.elf
+                0x00000000ffff089c                create_tss
+                0x00000000ffff093c                create_gdt
+ .functions_rom
+                0x00000000ffff0a84     0x140e ./obj/paging.elf
+                0x00000000ffff0a84                __create_paging
+                0x00000000ffff0ad6                __create_page_table
+                0x00000000ffff0b95                __create_page
+                0x00000000ffff0c7e                __cargar_paginas_kernel
+                0x00000000ffff0ebd                inicializar_paginacion
+                0x00000000ffff1d75                __get_new_page
+                0x00000000ffff1da7                __get_new_random_page
+                0x00000000ffff1e18                test_DTP
+                0x00000000ffff1e55                test_TP
+                0x00000000ffff1e92                __DATOS_LMA = (LOADADDR (.functions_rom) + SIZEOF (.functions_rom))
+
+.text           0x00000000ffff1e92        0x0
+ .text          0x00000000ffff1e92        0x0 ./obj/functions_c.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/int_handlers.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/interrupts.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/sys_tables_c.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/driver_vga.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/kbrd.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/paging.elf
+ .text          0x00000000ffff1e92        0x0 ./obj/scheduler.elf
+
+.datos          0x0000000001200000      0x1a7 dirección de carga 0x00000000ffff1e92
+ *(.datos)
+ .datos         0x0000000001200000      0x120 ./obj/kbrd.elf
+                0x0000000001200000                HEAD
+                0x0000000001200004                TAIL
+                0x0000000001200008                buffer_circular
+                0x000000000120001a                table_offset
+                0x0000000001200020                key_map
+ *(.bss)
+ .bss           0x0000000001200120        0x0 ./obj/functions_c.elf
+ .bss           0x0000000001200120        0x0 ./obj/int_handlers.elf
+ .bss           0x0000000001200120        0x0 ./obj/interrupts.elf
+ .bss           0x0000000001200120        0x0 ./obj/sys_tables_c.elf
+ .bss           0x0000000001200120        0x7 ./obj/driver_vga.elf
+ .bss           0x0000000001200127        0x0 ./obj/kbrd.elf
+ .bss           0x0000000001200127        0x0 ./obj/tarea_2.elf
+ .bss           0x0000000001200127        0x0 ./obj/tarea_3.elf
+ .bss           0x0000000001200127        0x0 ./obj/tarea_4.elf
+ *fill*         0x0000000001200127        0x1 
+ .bss           0x0000000001200128        0x8 ./obj/paging.elf
+ .bss           0x0000000001200130        0x0 ./obj/scheduler.elf
+ *(.kernel_bss)
+ .kernel_bss    0x0000000001200130        0x4 ./obj/int_handlers.elf
+                0x0000000001200130                last_context_id
+                0x0000000001200132                actual_context_id
+ .kernel_bss    0x0000000001200134        0x2 ./obj/driver_vga.elf
+                0x0000000001200134                progress_bar_offset
+ *fill*         0x0000000001200136        0xa 
+ .kernel_bss    0x0000000001200140       0x61 ./obj/scheduler.elf
+                0x0000000001200140                list_tareas
+                0x00000000012001a0                flag_no_pending
+ *(.int_bss)
+ *fill*         0x00000000012001a1        0x1 
+ .int_bss       0x00000000012001a2        0x5 ./obj/int_handlers.elf
+                0x00000000012001a2                ticks
+                0x00000000012001a4                first_time
+                0x00000000012001a5                flag_change_context
+                0x00000000012001a6                global_char
+                0x00000000ffff2039                __DATOS_USER_LMA = (LOADADDR (.datos) + SIZEOF (.datos))
+
+.datos_user     0x0000000001201000       0x28 dirección de carga 0x00000000ffff2039
+ *(.datos_user)
+ .datos_user    0x0000000001201000       0x10 ./obj/tarea_1.elf
+                0x0000000001201000                promedio
+                0x0000000001201008                null_data
+ .datos_user    0x0000000001201010       0x10 ./obj/tarea_2.elf
+                0x0000000001201010                suma_sw
+                0x0000000001201018                suma
+ .datos_user    0x0000000001201020        0x8 ./obj/tarea_3.elf
+                0x0000000001201020                suma_sq
+                0x00000000ffff2061                __MMX_DATA_LMA = (LOADADDR (.datos_user) + SIZEOF (.datos_user))
+
+.mmx_data       0x0000000001202000      0x200 dirección de carga 0x00000000ffff2061
+ *(.mmx_data)
+ .mmx_data      0x0000000001202000      0x200 ./obj/int_handlers.elf
+                0x0000000001202000                mmx_context_data
+                0x00000000ffff2261                __UTILS_LMA = (LOADADDR (.mmx_data) + SIZEOF (.mmx_data))
+                0x00000000ffff2261                __UTILS_VMA = __UTILS_LMA
+
+.utils16        0x00000000ffff2261     0x1310
+ *(.utils16)
+ .utils16       0x00000000ffff2261     0x1310 ./obj/vgainit.elf
+                0x00000000ffff2261                VGA_Init
+
+.codigo_reset   0x00000000fffffff0        0x8
+ *(.resetVector)
+ .resetVector   0x00000000fffffff0        0x8 ./obj/init.elf
+                0x00000000fffffff0                reset
+
+.fill_rom       0x00000000fffffff8        0x7
+ FILL mask 0x90
+                0x00000000fffffffe                . = ((ORIGIN (rom) + LENGTH (rom)) - 0x1)
+ *fill*         0x00000000fffffff8        0x6 90
+                0x00000000fffffffe        0x1 BYTE 0x90
+
+.end_rom        0x00000000ffffffff        0x1
+                0x00000000ffffffff        0x1 BYTE 0x90
+LOAD ./obj/functions_c.elf
+LOAD ./obj/init.elf
+LOAD ./obj/main.elf
+LOAD ./obj/sys_tables_asm.elf
+LOAD ./obj/int_handlers.elf
+LOAD ./obj/interrupts.elf
+LOAD ./obj/sys_tables_c.elf
+LOAD ./obj/driver_vga.elf
+LOAD ./obj/vgainit.elf
+LOAD ./obj/kbrd.elf
+LOAD ./obj/tarea_1.elf
+LOAD ./obj/tarea_2.elf
+LOAD ./obj/tarea_2_s.elf
+LOAD ./obj/tarea_3.elf
+LOAD ./obj/tarea_3_s.elf
+LOAD ./obj/tarea_4.elf
+LOAD ./obj/paging.elf
+LOAD ./obj/scheduler.elf
+LOAD ./obj/int_handlers_s.elf
+OUTPUT(bin/bios.bin binary)
+
+.comment        0x0000000000000000      0x204
+ .comment       0x0000000000000000       0x2b ./obj/functions_c.elf
+ .comment       0x000000000000002b       0x2b ./obj/int_handlers.elf
+ .comment       0x0000000000000056       0x2b ./obj/interrupts.elf
+ .comment       0x0000000000000081       0x2b ./obj/sys_tables_c.elf
+ .comment       0x00000000000000ac       0x2b ./obj/driver_vga.elf
+ .comment       0x00000000000000d7       0x2b ./obj/kbrd.elf
+ .comment       0x0000000000000102       0x2b ./obj/tarea_1.elf
+ .comment       0x000000000000012d       0x2b ./obj/tarea_2.elf
+ .comment       0x0000000000000158       0x2b ./obj/tarea_3.elf
+ .comment       0x0000000000000183       0x2b ./obj/tarea_4.elf
+ .comment       0x00000000000001ae       0x2b ./obj/paging.elf
+ .comment       0x00000000000001d9       0x2b ./obj/scheduler.elf

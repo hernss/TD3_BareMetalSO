@@ -1,0 +1,21 @@
+     1                                  USE32
+     2                                  section .text 
+     3                                  GLOBAL sum_sw
+     4                                  ;; Funcion que hace la suma saturada de word
+     5                                  ;; param 1 - direccion base de la lista de 64bits
+     6                                  ;; param 2 - cantidad de elementos
+     7                                  ;; param 3 - direccion base para almacenar el resultado
+     8                                  ;; no retorna nada
+     9                                  EXTERN null_data
+    10                                  sum_sw:
+    11                                      
+    12                                      ;almaceno en esp+4 el resultado de sumar esp+4 con esp+8
+    13 00000000 8B442404                    mov eax, [esp+4]     ;Direccion del operando destino
+    14 00000004 8B542408                    mov edx, [esp+8]     ;Direccion del operando source
+    15                                  
+    16                                  
+    17 00000008 0F6F00                      movq mm0, [eax]
+    18 0000000B 0F6F0A                      movq mm1, [edx]
+    19 0000000E 0FDDC1                      paddusw mm0, mm1    ;Hago la suma saturada y guarda el resultado en mm0
+    20 00000011 0F7F00                      movq [eax], mm0     ;Muevo los 64bits a la posicion que me pasaron por la pila
+    21 00000014 C3                          ret

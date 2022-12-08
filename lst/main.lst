@@ -1,0 +1,898 @@
+     1                                  USE32
+     2                                  
+     3                                  %include "./inc/x86_types.h"
+     1                              <1> ;/* Basado en u_boot */
+     2                              <1> %ifndef _ASM_X86_PROCESSOR_FLAGS_H
+     3                              <1>    %define _ASM_X86_PROCESSOR_FLAGS_H  0
+     4                              <1> ;/* Various flags defined: can be included from assembler. */
+     5                              <1> 
+     6                              <1> ;/*
+     7                              <1> ; * EFLAGS bits
+     8                              <1> ; */
+     9                              <1> %define X86_EFLAGS_CF	0x00000001 ;/* Carry Flag */
+    10                              <1> %define X86_EFLAGS_PF	0x00000004 ;/* Parity Flag */
+    11                              <1> %define X86_EFLAGS_AF	0x00000010 ;/* Auxillary carry Flag */
+    12                              <1> %define X86_EFLAGS_ZF	0x00000040 ;/* Zero Flag */
+    13                              <1> %define X86_EFLAGS_SF	0x00000080 ;/* Sign Flag */
+    14                              <1> %define X86_EFLAGS_TF	0x00000100 ;/* Trap Flag */
+    15                              <1> %define X86_EFLAGS_IF	0x00000200 ;/* Interrupt Flag */
+    16                              <1> %define X86_EFLAGS_DF	0x00000400 ;/* Direction Flag */
+    17                              <1> %define X86_EFLAGS_OF	0x00000800 ;/* Overflow Flag */
+    18                              <1> %define X86_EFLAGS_IOPL	0x00003000 ;/* IOPL mask */
+    19                              <1> %define X86_EFLAGS_NT	0x00004000 ;/* Nested Task */
+    20                              <1> %define X86_EFLAGS_RF	0x00010000 ;/* Resume Flag */
+    21                              <1> %define X86_EFLAGS_VM	0x00020000 ;/* Virtual Mode */
+    22                              <1> %define X86_EFLAGS_AC	0x00040000 ;/* Alignment Check */
+    23                              <1> %define X86_EFLAGS_VIF	0x00080000 ;/* Virtual Interrupt Flag */
+    24                              <1> %define X86_EFLAGS_VIP	0x00100000 ;/* Virtual Interrupt Pending */
+    25                              <1> %define X86_EFLAGS_ID	0x00200000 ;/* CPUID detection flag */
+    26                              <1> 
+    27                              <1> ;/*
+    28                              <1> ; * Basic CPU control in CR0
+    29                              <1> ; */
+    30                              <1> %define X86_CR0_PE	0x00000001 ;/* Protection Enable */
+    31                              <1> %define X86_CR0_MP	0x00000002 ;/* Monitor Coprocessor */
+    32                              <1> %define X86_CR0_EM	0x00000004 ;/* Emulation */
+    33                              <1> %define X86_CR0_TS	0x00000008 ;/* Task Switched */
+    34                              <1> %define X86_CR0_ET	0x00000010 ;/* Extension Type */
+    35                              <1> %define X86_CR0_NE	0x00000020 ;/* Numeric Error */
+    36                              <1> %define X86_CR0_WP	0x00010000 ;/* Write Protect */
+    37                              <1> %define X86_CR0_AM	0x00040000 ;/* Alignment Mask */
+    38                              <1> %define X86_CR0_NW	0x20000000 ;/* Not Write-through */
+    39                              <1> %define X86_CR0_CD	0x40000000 ;/* Cache Disable */
+    40                              <1> %define X86_CR0_PG	0x80000000 ;/* Paging */
+    41                              <1> 
+    42                              <1> ;/*
+    43                              <1> ;* Paging options in CR3
+    44                              <1> ;*/
+    45                              <1> %define X86_CR3_PWT	0x00000008 ;/* Page Write Through;*/
+    46                              <1> %define X86_CR3_PCD	0x00000010 ;/* Page Cache Disable;*/
+    47                              <1> 
+    48                              <1> ;/*
+    49                              <1> ;* Intel CPU features in CR4
+    50                              <1> ;*/
+    51                              <1> %define X86_CR4_VME	      0x00000001 ;/* enable vm86 extensions;*/
+    52                              <1> %define X86_CR4_PVI	      0x00000002 ;/* virtual interrupts flag enable;*/
+    53                              <1> %define X86_CR4_TSD	      0x00000004 ;/* disable time stamp at ipl 3;*/
+    54                              <1> %define X86_CR4_DE	      0x00000008 ;/* enable debugging extensions;*/
+    55                              <1> %define X86_CR4_PSE	      0x00000010 ;/* enable page size extensions;*/
+    56                              <1> %define X86_CR4_PAE	      0x00000020 ;/* enable physical address extensions;*/
+    57                              <1> %define X86_CR4_MCE	      0x00000040 ;/* Machine check enable;*/
+    58                              <1> %define X86_CR4_PGE	      0x00000080 ;/* enable global pages;*/
+    59                              <1> %define X86_CR4_PCE	      0x00000100 ;/* enable performance counters at ipl 3;*/
+    60                              <1> %define X86_CR4_OSFXSR	   0x00000200 ;/* enable fast FPU save and restore;*/
+    61                              <1> %define X86_CR4_OSXMMEXCPT 0x00000400 ;/* enable unmasked SSE exceptions;*/
+    62                              <1> %define X86_CR4_VMXE	      0x00002000 ;/* enable VMX virtualization;*/
+    63                              <1> %define X86_CR4_OSXSAVE    0x00040000 ;/* enable xsave and xrestore;*/
+    64                              <1> 
+    65                              <1> ;/*
+    66                              <1> ;* x86-64 Task Priority Register, CR8
+    67                              <1> ;*/
+    68                              <1> %define X86_CR8_TPR	      0x0000000F ;/* task priority register;*/
+    69                              <1> 
+    70                              <1> ;/*
+    71                              <1> ;* AMD and Transmeta use MSRs for configuration; see <asm/msr-index.h>
+    72                              <1> ;*/
+    73                              <1> 
+    74                              <1> ;/*
+    75                              <1> ;*      NSC/Cyrix CPU configuration register indexes
+    76                              <1> ;*/
+    77                              <1> %define CX86_PCR0	         0x20
+    78                              <1> %define CX86_GCR	         0xb8
+    79                              <1> %define CX86_CCR0	         0xc0
+    80                              <1> %define CX86_CCR1	         0xc1
+    81                              <1> %define CX86_CCR2	         0xc2
+    82                              <1> %define CX86_CCR3	         0xc3
+    83                              <1> %define CX86_CCR4	         0xe8
+    84                              <1> %define CX86_CCR5	         0xe9
+    85                              <1> %define CX86_CCR6	         0xea
+    86                              <1> %define CX86_CCR7	         0xeb
+    87                              <1> %define CX86_PCR1	         0xf0
+    88                              <1> %define CX86_DIR0	         0xfe
+    89                              <1> %define CX86_DIR1	         0xff
+    90                              <1> %define CX86_ARR_BASE	   0xc4
+    91                              <1> %define CX86_RCR_BASE	   0xdc
+    92                              <1> 
+    93                              <1> ;/*
+    94                              <1> ;* Intel CPUID features
+    95                              <1> ;*/
+    96                              <1> %define X86_CPUID_EXT_FUNC 0x80000000  ;/* Maximum Input Value for Extended Function CPUID Informationn;*/
+    97                              <1> %define X86_CPUID_EXT_FEAT 0x80000001  ;/* Extended Processor Signature and Feature Bits;*/
+    98                              <1> %define X86_CPUID_EXEC_DIS 20          ;/* Execute Disable Bit available;*/
+    99                              <1> %define X86_CPUID_1G_PAG   26          ;/* 1-GByte pages are available;*/
+   100                              <1> %define X86_CPUID_I64      29          ;/*Intel 64 Architecture available*/
+   101                              <1> 
+   102                              <1> %define X86_CPUID_FPU      0x00000001
+   103                              <1> %define X86_CPUID_MMX      0x00800000
+   104                              <1> %define X86_CPUID_FXSR     0x01000000
+   105                              <1> %define X86_CPUID_SSE      0x02000000
+   106                              <1> %define X86_CPUID_SSE2     0x04000000
+   107                              <1> 
+   108                              <1> %define x86_CPUID_GenuineIntel_EBX 0x756E6547
+   109                              <1> %define x86_CPUID_GenuineIntel_ECX 0x6C65746E
+   110                              <1> %define x86_CPUID_GenuineIntel_EDX 0x49656E69
+   111                              <1> 
+   112                              <1> %ifdef __KERNEL__
+   113                              <1>    %ifdef CONFIG_VM86
+   114                              <1>       %define X86_VM_MASK	X86_EFLAGS_VM
+   115                              <1>    %else
+   116                              <1>       %define X86_VM_MASK	0 ;/* No VM86 support;*/
+   117                              <1>    %endif
+   118                              <1> %endif
+   119                              <1> 
+   120                              <1> %endif ;/* _ASM_X86_PROCESSOR_FLAGS_H;*/
+     4                                  
+     5                                  section .start32
+     6                                  
+     7                                  EXTERN CS_SEL
+     8                                  EXTERN DS_SEL
+     9                                  
+    10                                  EXTERN __STACK_END_32
+    11                                  EXTERN __STACK_SIZE_32
+    12                                  
+    13                                  EXTERN __PILA_KERNEL
+    14                                  
+    15                                  EXTERN __KERNEL_32_LMA
+    16                                  EXTERN __KERNEL_32_PHI
+    17                                  EXTERN __codigo_kernel32_size
+    18                                  
+    19                                  EXTERN __INTERRUPTS_LMA
+    20                                  EXTERN __INTERRUPTS_PHI
+    21                                  EXTERN __codigo_interrupts_size
+    22                                  
+    23                                  EXTERN __FUNCTIONS_LMA
+    24                                  EXTERN __FUNCTIONS_VMA
+    25                                  EXTERN __functions_size
+    26                                  
+    27                                  EXTERN __TAREA_1_TEXT_PHI
+    28                                  EXTERN __TAREA_1_BSS_PHI
+    29                                  EXTERN __TAREA_1_RODATA_PHI
+    30                                  EXTERN __TAREA_1_DATA_PHI
+    31                                  
+    32                                  EXTERN __TAREA_1_TEXT_LMA
+    33                                  EXTERN __TAREA_1_RODATA_LMA
+    34                                  EXTERN  __TAREA_1_BSS_LMA
+    35                                  EXTERN  __TAREA_1_DATA_LMA
+    36                                  
+    37                                  EXTERN __tarea_1_text_size
+    38                                  EXTERN __tarea_1_rodata_size
+    39                                  EXTERN __tarea_1_bss_size
+    40                                  EXTERN __tarea_1_data_size
+    41                                  
+    42                                  EXTERN __TAREA_2_TEXT_PHI
+    43                                  EXTERN __TAREA_2_BSS_PHI
+    44                                  EXTERN __TAREA_2_RODATA_PHI
+    45                                  EXTERN __TAREA_2_DATA_PHI
+    46                                  
+    47                                  EXTERN __TAREA_2_TEXT_LMA
+    48                                  EXTERN __TAREA_2_RODATA_LMA
+    49                                  EXTERN __TAREA_2_BSS_LMA
+    50                                  EXTERN __TAREA_2_DATA_LMA
+    51                                  
+    52                                  EXTERN __tarea_2_text_size
+    53                                  EXTERN __tarea_2_rodata_size
+    54                                  EXTERN __tarea_2_bss_size
+    55                                  EXTERN __tarea_2_data_size
+    56                                  
+    57                                  EXTERN __TAREA_3_TEXT_PHI
+    58                                  EXTERN __TAREA_3_BSS_PHI
+    59                                  EXTERN __TAREA_3_RODATA_PHI
+    60                                  EXTERN __TAREA_3_DATA_PHI
+    61                                  
+    62                                  EXTERN __TAREA_3_TEXT_LMA
+    63                                  EXTERN __TAREA_3_RODATA_LMA
+    64                                  EXTERN __TAREA_3_BSS_LMA
+    65                                  EXTERN __TAREA_3_DATA_LMA
+    66                                  
+    67                                  EXTERN __tarea_3_text_size
+    68                                  EXTERN __tarea_3_rodata_size
+    69                                  EXTERN __tarea_3_bss_size
+    70                                  EXTERN __tarea_3_data_size
+    71                                  
+    72                                  EXTERN __TAREA_4_TEXT_PHI
+    73                                  EXTERN __TAREA_4_BSS_PHI
+    74                                  EXTERN __TAREA_4_RODATA_PHI
+    75                                  EXTERN __TAREA_4_DATA_PHI
+    76                                  
+    77                                  EXTERN __TAREA_4_TEXT_LMA
+    78                                  EXTERN __TAREA_4_RODATA_LMA
+    79                                  EXTERN __TAREA_4_BSS_LMA
+    80                                  EXTERN __TAREA_4_DATA_LMA
+    81                                  
+    82                                  EXTERN __tarea_4_text_size
+    83                                  EXTERN __tarea_4_rodata_size
+    84                                  EXTERN __tarea_4_bss_size
+    85                                  EXTERN __tarea_4_data_size
+    86                                  
+    87                                  EXTERN __fast_memcpy_rom
+    88                                  EXTERN create_gdt
+    89                                  EXTERN create_idt
+    90                                  EXTERN _gdtr_c
+    91                                  EXTERN _idtr_c
+    92                                  
+    93                                  EXTERN inicializar_paginacion
+    94                                  EXTERN clear
+    95                                  EXTERN init_keyboard
+    96                                  EXTERN inicializar_scheduler
+    97                                  
+    98                                  CS_SEL_C equ 0x08
+    99                                  DS_SEL_C equ 0x10
+   100                                  TSS_SEL_C equ 0x18
+   101                                  CS_SEL_C_USER equ 0x20
+   102                                  DS_SEL_C_USER equ 0x28
+   103                                  
+   104                                  GLOBAL start32_launcher
+   105                                  GLOBAL kernel32_init
+   106                                  
+   107                                  GLOBAL save_context
+   108                                  GLOBAL load_context
+   109                                  
+   110                                  EXTERN actual_context_id
+   111                                  EXTERN last_context_id
+   112                                  
+   113                                  EXTERN trueTSS
+   114                                  EXTERN null_data
+   115                                  
+   116                                  ;MMX context data
+   117                                  EXTERN mmx_context_data
+   118                                  EXTERN __MMX_DATA_T1_PHI
+   119                                  EXTERN __MMX_DATA_T2_PHI
+   120                                  EXTERN __MMX_DATA_T3_PHI
+   121                                  EXTERN __MMX_DATA_T4_PHI
+   122                                  
+   123                                  start32_launcher:
+   124                                  
+   125 00000000 66B8[0000]                  mov ax, DS_SEL
+   126 00000004 8ED8                        mov ds, ax
+   127 00000006 8EC0                        mov es, ax
+   128 00000008 8EE0                        mov fs, ax
+   129 0000000A 8EE8                        mov gs, ax
+   130                                  
+   131                                      ;Preparo la pila temporal
+   132 0000000C 8ED0                        mov ss, ax
+   133 0000000E BC[00000000]                mov esp, __STACK_END_32
+   134 00000013 31C0                        xor eax, eax
+   135                                  
+   136                                      ;Ahora que tengo un mini modo protegido con una precaria GDT en ROM voy a hacer una memory test
+   137                                      ;Si el test esta OK continuo con la carga de la GDT de RAM
+   138                                  
+   139                                      ;Asumo que el sistema tiene 1GB de RAM
+   140                                      ;MAX Memory ADDRESS 0x3FFFFFFF
+   141                                      ;Total del test: 4.716.867 ciclos de clock calculado con el time stamp counter del procesador
+   142 00000015 31FF                        xor edi, edi
+   143                                  
+   144 00000017 0F31                        rdtsc
+   145 00000019 89C1                        mov ecx, eax
+   146                                  
+   147                                  mem_test_loop:
+   148 0000001B C707AAAAAAAA                mov dword [edi], 0xAAAAAAAA
+   149 00000021 8B07                        mov eax, [edi]
+   150 00000023 3DAAAAAAAA                  cmp eax, 0xAAAAAAAA
+   151 00000028 7539                        jne mem_test_error
+   152 0000002A C70755555555                mov dword [edi], 0x55555555
+   153 00000030 8B07                        mov eax, [edi]
+   154 00000032 3D55555555                  cmp eax, 0x55555555
+   155 00000037 752A                        jne mem_test_error
+   156 00000039 C70700000000                mov dword [edi], 0x0
+   157 0000003F 8B07                        mov eax, [edi]
+   158 00000041 83F800                      cmp eax, 0x0
+   159 00000044 751D                        jne mem_test_error
+   160 00000046 81C700100000                add edi, 0x1000
+   161 0000004C 81FF00000A00                cmp edi, 0xA0000    ;Aca empiezan datos de la bios y mas abajo el shadow de la rom
+   162 00000052 7505                        jne next
+   163 00000054 BF00001000                  mov edi, 0x100000   ;entoces avanzo hasta despues del shadow de la rom y en el medio "confio" que anda bien.
+   164                                  next:
+   165 00000059 81FF00000040                cmp edi, 0x40000000 ;Si llegue al final del primer GB
+   166 0000005F 7406                        je mem_test_end     ;Salto al final del test
+   167 00000061 EBB8                        jmp mem_test_loop
+   168                                  
+   169                                  mem_test_error:
+   170 00000063 FA                          cli
+   171 00000064 F4                          hlt
+   172 00000065 EBFC                        jmp mem_test_error          ;Adios mundo cruel
+   173                                  
+   174                                  mem_test_end:
+   175                                      ;Si llegue hasta aca es porque el memory test fue exitoso.
+   176                                  
+   177 00000067 0F31                        rdtsc
+   178 00000069 29C8                        sub eax, ecx                    ;ECX tiene la cantidad de ciclos que tomo el memory test
+   179                                  
+   180                                  
+   181                                      ;Ahora chequeo que el CPU tenga las especificaciones que necesito para mi programa
+   182                                      ; Step 1.Execute the CPUID instruction with an input value of EAX=0 and ensure the vendor-ID string returned is "GenuineIntel".
+   183                                      ; Step 2.Execute the CPUID instruction with EAX=1 to load the EDX register with the feature flags.
+   184                                      
+   185 0000006B B800000000                  mov eax, 0
+   186 00000070 0FA2                        cpuid
+   187                                  
+   188                                      ;Chequeo que sea un "GenuineIntel"
+   189 00000072 81FB47656E75                cmp ebx, x86_CPUID_GenuineIntel_EBX
+   190 00000078 0F8567030000                jne .guard
+   191 0000007E 81F96E74656C                cmp ecx, x86_CPUID_GenuineIntel_ECX
+   192 00000084 0F855B030000                jne .guard
+   193 0000008A 81FA696E6549                cmp edx, x86_CPUID_GenuineIntel_EDX
+   194 00000090 0F854F030000                jne .guard                  
+   195                                  
+   196 00000096 B801000000                  mov eax, 1
+   197 0000009B 0FA2                        cpuid
+   198                                  
+   199 0000009D F7C201000000                test edx, X86_CPUID_FPU
+   200 000000A3 0F843C030000                jz .guard                       ;No tengo FPU.. sin FPU no hay paraiso
+   201 000000A9 F7C200008000                test edx, X86_CPUID_MMX
+   202 000000AF 0F8430030000                jz .guard                       ;No tengo instruciones SIMD
+   203 000000B5 F7C200000001                test edx, X86_CPUID_FXSR
+   204 000000BB 0F8424030000                jz .guard                       ;No tengo las instrucciones rapidas para guardar y recuperar la pila.
+   205 000000C1 F7C200000002                test edx, X86_CPUID_SSE
+   206 000000C7 0F8418030000                jz .guard                       ;No tengo el set de instrucciones SSE
+   207 000000CD F7C200000004                test edx, X86_CPUID_SSE2
+   208 000000D3 0F840C030000                jz .guard                       ;No tengo el set de instrucciones SSE2
+   209                                  
+   210                                      ;Preparo la GDT en RAM
+   211 000000D9 55                          push ebp                        ;ENTER
+   212 000000DA 89E5                        mov ebp, esp
+   213 000000DC E8(00000000)                call create_gdt
+   214 000000E1 C9                          leave
+   215                                  
+   216 000000E2 0F0115[00000000]            lgdt [_gdtr_c]    ;Cargo la gdt que acabo de crear en C en RAM+
+   217                                  
+   218                                      ;Ahora que tengo cargada la nueva GDT en RAM actualizo los selectores de segmento
+   219                                  
+   220 000000E9 66B81000                    mov ax, DS_SEL_C
+   221 000000ED 8ED8                        mov ds, ax
+   222 000000EF 8EC0                        mov es, ax
+   223 000000F1 8EE0                        mov fs, ax
+   224 000000F3 8EE8                        mov gs, ax
+   225                                  
+   226 000000F5 8ED0                        mov ss, ax                      ;Cargo el segmento de pila
+   227 000000F7 BC[FF0F0000]                mov esp, __PILA_KERNEL + 0xFFF  ;Cargo el puntero de pila, __PILA_KERNEL apunta al comienzo de la pagina donde voy a guardar la pila de kernel
+   228                                  
+   229 000000FC 66B81800                    mov ax, TSS_SEL_C              ;Una vez que cree mi trueTSS en la funcion create_gdt
+   230 00000100 0F00D8                      ltr ax                         ;Cargo el registro tr con la instruccion ltr
+   231                                  
+   232 00000103 55                          push ebp                        ;ENTER
+   233 00000104 89E5                        mov ebp, esp 
+   234 00000106 E8(00000000)                call create_idt                 ;Creo la tabla de interrupciones
+   235 0000010B C9                          leave
+   236                                  
+   237 0000010C 0F011D[00000000]            lidt [_idtr_c]
+   238                                  
+   239 00000113 55                          push ebp                        ;ENTER
+   240 00000114 89E5                        mov ebp, esp
+   241 00000116 E8CE020000                  call configure_PIC              ;Envio la secuencia de inicializacion del PIC
+   242 0000011B C9                          leave
+   243                                  
+   244 0000011C 55                          push ebp                        ;ENTER
+   245 0000011D 89E5                        mov ebp, esp
+   246 0000011F 68[00000000]                push __codigo_interrupts_size     ;Copio el codigo de los handlers de interrupciones
+   247 00000124 68[00000000]                push __INTERRUPTS_PHI
+   248 00000129 68[00000000]                push __INTERRUPTS_LMA
+   249 0000012E E8(00000000)                call __fast_memcpy_rom
+   250 00000133 C9                          leave
+   251 00000134 83F801                      cmp eax, 1
+   252 00000137 0F85A8020000                jne .guard 
+   253                                  
+   254                                      ;Copio el codigo del programa
+   255 0000013D 55                          push ebp                        ;ENTER
+   256 0000013E 89E5                        mov ebp, esp
+   257 00000140 68[00000000]                push __codigo_kernel32_size     ;Copio el codigo del kernel
+   258 00000145 68[00000000]                push __KERNEL_32_PHI
+   259 0000014A 68[00000000]                push __KERNEL_32_LMA
+   260 0000014F E8(00000000)                call __fast_memcpy_rom
+   261 00000154 C9                          leave
+   262 00000155 83F801                      cmp eax, 1
+   263 00000158 0F8587020000                jne .guard
+   264                                  
+   265                                      ;Copio la Tarea 1 a memoria
+   266 0000015E 55                          push ebp                        ;ENTER
+   267 0000015F 89E5                        mov ebp, esp
+   268 00000161 68[00000000]                push __tarea_1_text_size     ;Copio el codigo de los handlers de interrupciones
+   269 00000166 68[00000000]                push __TAREA_1_TEXT_PHI
+   270 0000016B 68[00000000]                push __TAREA_1_TEXT_LMA
+   271 00000170 E8(00000000)                call __fast_memcpy_rom
+   272 00000175 C9                          leave
+   273 00000176 83F801                      cmp eax, 1
+   274 00000179 0F8566020000                jne .guard
+   275                                  
+   276 0000017F 55                          push ebp                        ;ENTER
+   277 00000180 89E5                        mov ebp, esp
+   278 00000182 68[00000000]                push __tarea_1_rodata_size     ;Copio el codigo de los handlers de interrupciones
+   279 00000187 68[00000000]                push __TAREA_1_RODATA_PHI
+   280 0000018C 68[00000000]                push __TAREA_1_RODATA_LMA
+   281 00000191 E8(00000000)                call __fast_memcpy_rom
+   282 00000196 C9                          leave
+   283 00000197 83F801                      cmp eax, 1
+   284 0000019A 0F8545020000                jne .guard
+   285                                  
+   286 000001A0 55                          push ebp                        ;ENTER
+   287 000001A1 89E5                        mov ebp, esp
+   288 000001A3 68[00000000]                push __tarea_1_bss_size     ;Copio el codigo de los handlers de interrupciones
+   289 000001A8 68[00000000]                push __TAREA_1_BSS_PHI
+   290 000001AD 68[00000000]                push __TAREA_1_BSS_LMA
+   291 000001B2 E8(00000000)                call __fast_memcpy_rom
+   292 000001B7 C9                          leave
+   293 000001B8 83F801                      cmp eax, 1
+   294 000001BB 0F8524020000                jne .guard
+   295                                  
+   296 000001C1 55                          push ebp                        ;ENTER
+   297 000001C2 89E5                        mov ebp, esp
+   298 000001C4 68[00000000]                push __tarea_1_data_size     ;Copio el codigo de los handlers de interrupciones
+   299 000001C9 68[00000000]                push __TAREA_1_DATA_PHI
+   300 000001CE 68[00000000]                push __TAREA_1_DATA_LMA
+   301 000001D3 E8(00000000)                call __fast_memcpy_rom
+   302 000001D8 C9                          leave
+   303 000001D9 83F801                      cmp eax, 1
+   304 000001DC 0F8503020000                jne .guard
+   305                                  
+   306                                      ;Copio la Tarea 2 a memoria
+   307 000001E2 55                          push ebp                        ;ENTER
+   308 000001E3 89E5                        mov ebp, esp
+   309 000001E5 68[00000000]                push __tarea_2_text_size     ;Copio el codigo de los handlers de interrupciones
+   310 000001EA 68[00000000]                push __TAREA_2_TEXT_PHI
+   311 000001EF 68[00000000]                push __TAREA_2_TEXT_LMA
+   312 000001F4 E8(00000000)                call __fast_memcpy_rom
+   313 000001F9 C9                          leave
+   314 000001FA 83F801                      cmp eax, 1
+   315 000001FD 0F85E2010000                jne .guard
+   316                                  
+   317 00000203 55                          push ebp                        ;ENTER
+   318 00000204 89E5                        mov ebp, esp
+   319 00000206 68[00000000]                push __tarea_2_rodata_size     ;Copio el codigo de los handlers de interrupciones
+   320 0000020B 68[00000000]                push __TAREA_2_RODATA_PHI
+   321 00000210 68[00000000]                push __TAREA_2_RODATA_LMA
+   322 00000215 E8(00000000)                call __fast_memcpy_rom
+   323 0000021A C9                          leave
+   324 0000021B 83F801                      cmp eax, 1
+   325 0000021E 0F85C1010000                jne .guard
+   326                                  
+   327 00000224 55                          push ebp                        ;ENTER
+   328 00000225 89E5                        mov ebp, esp
+   329 00000227 68[00000000]                push __tarea_2_bss_size     ;Copio el codigo de los handlers de interrupciones
+   330 0000022C 68[00000000]                push __TAREA_2_BSS_PHI
+   331 00000231 68[00000000]                push __TAREA_2_BSS_LMA
+   332 00000236 E8(00000000)                call __fast_memcpy_rom
+   333 0000023B C9                          leave
+   334 0000023C 83F801                      cmp eax, 1
+   335 0000023F 0F85A0010000                jne .guard
+   336                                  
+   337 00000245 55                          push ebp                        ;ENTER
+   338 00000246 89E5                        mov ebp, esp
+   339 00000248 68[00000000]                push __tarea_2_data_size     ;Copio el codigo de los handlers de interrupciones
+   340 0000024D 68[00000000]                push __TAREA_2_DATA_PHI
+   341 00000252 68[00000000]                push __TAREA_2_DATA_LMA
+   342 00000257 E8(00000000)                call __fast_memcpy_rom
+   343 0000025C C9                          leave
+   344 0000025D 83F801                      cmp eax, 1
+   345 00000260 0F857F010000                jne .guard
+   346                                  
+   347                                      ;Copio la Tarea 3 a memoria
+   348 00000266 55                          push ebp                        ;ENTER
+   349 00000267 89E5                        mov ebp, esp
+   350 00000269 68[00000000]                push __tarea_3_text_size     ;Copio el codigo de los handlers de interrupciones
+   351 0000026E 68[00000000]                push __TAREA_3_TEXT_PHI
+   352 00000273 68[00000000]                push __TAREA_3_TEXT_LMA
+   353 00000278 E8(00000000)                call __fast_memcpy_rom
+   354 0000027D C9                          leave
+   355 0000027E 83F801                      cmp eax, 1
+   356 00000281 0F855E010000                jne .guard
+   357                                  
+   358 00000287 55                          push ebp                        ;ENTER
+   359 00000288 89E5                        mov ebp, esp
+   360 0000028A 68[00000000]                push __tarea_3_rodata_size     ;Copio el codigo de los handlers de interrupciones
+   361 0000028F 68[00000000]                push __TAREA_3_RODATA_PHI
+   362 00000294 68[00000000]                push __TAREA_3_RODATA_LMA
+   363 00000299 E8(00000000)                call __fast_memcpy_rom
+   364 0000029E C9                          leave
+   365 0000029F 83F801                      cmp eax, 1
+   366 000002A2 0F853D010000                jne .guard
+   367                                  
+   368 000002A8 55                          push ebp                        ;ENTER
+   369 000002A9 89E5                        mov ebp, esp
+   370 000002AB 68[00000000]                push __tarea_3_bss_size     ;Copio el codigo de los handlers de interrupciones
+   371 000002B0 68[00000000]                push __TAREA_3_BSS_PHI
+   372 000002B5 68[00000000]                push __TAREA_3_BSS_LMA
+   373 000002BA E8(00000000)                call __fast_memcpy_rom
+   374 000002BF C9                          leave
+   375 000002C0 83F801                      cmp eax, 1
+   376 000002C3 0F851C010000                jne .guard
+   377                                  
+   378 000002C9 55                          push ebp                        ;ENTER
+   379 000002CA 89E5                        mov ebp, esp
+   380 000002CC 68[00000000]                push __tarea_3_data_size     ;Copio el codigo de los handlers de interrupciones
+   381 000002D1 68[00000000]                push __TAREA_3_DATA_PHI
+   382 000002D6 68[00000000]                push __TAREA_3_DATA_LMA
+   383 000002DB E8(00000000)                call __fast_memcpy_rom
+   384 000002E0 C9                          leave
+   385 000002E1 83F801                      cmp eax, 1
+   386 000002E4 0F85FB000000                jne .guard
+   387                                  
+   388                                      ;Copio la tarea 4 a memoria
+   389 000002EA 55                          push ebp                        ;ENTER
+   390 000002EB 89E5                        mov ebp, esp
+   391 000002ED 68[00000000]                push __tarea_4_text_size     ;Copio el codigo de los handlers de interrupciones
+   392 000002F2 68[00000000]                push __TAREA_4_TEXT_PHI
+   393 000002F7 68[00000000]                push __TAREA_4_TEXT_LMA
+   394 000002FC E8(00000000)                call __fast_memcpy_rom
+   395 00000301 C9                          leave
+   396 00000302 83F801                      cmp eax, 1
+   397 00000305 0F85DA000000                jne .guard
+   398                                  
+   399 0000030B 55                          push ebp                        ;ENTER
+   400 0000030C 89E5                        mov ebp, esp
+   401 0000030E 68[00000000]                push __tarea_4_rodata_size     ;Copio el codigo de los handlers de interrupciones
+   402 00000313 68[00000000]                push __TAREA_4_RODATA_PHI
+   403 00000318 68[00000000]                push __TAREA_4_RODATA_LMA
+   404 0000031D E8(00000000)                call __fast_memcpy_rom
+   405 00000322 C9                          leave
+   406 00000323 83F801                      cmp eax, 1
+   407 00000326 0F85B9000000                jne .guard
+   408                                  
+   409 0000032C 55                          push ebp                        ;ENTER
+   410 0000032D 89E5                        mov ebp, esp
+   411 0000032F 68[00000000]                push __tarea_4_bss_size     ;Copio el codigo de los handlers de interrupciones
+   412 00000334 68[00000000]                push __TAREA_4_BSS_PHI
+   413 00000339 68[00000000]                push __TAREA_4_BSS_LMA
+   414 0000033E E8(00000000)                call __fast_memcpy_rom
+   415 00000343 C9                          leave
+   416 00000344 83F801                      cmp eax, 1
+   417 00000347 0F8598000000                jne .guard
+   418                                  
+   419 0000034D 55                          push ebp                        ;ENTER
+   420 0000034E 89E5                        mov ebp, esp
+   421 00000350 68[00000000]                push __tarea_4_data_size     ;Copio el codigo de los handlers de interrupciones
+   422 00000355 68[00000000]                push __TAREA_4_DATA_PHI
+   423 0000035A 68[00000000]                push __TAREA_4_DATA_LMA
+   424 0000035F E8(00000000)                call __fast_memcpy_rom
+   425 00000364 C9                          leave
+   426 00000365 83F801                      cmp eax, 1
+   427 00000368 757B                        jne .guard
+   428                                  
+   429                                  
+   430                                      ;estas secciones de memoria me conviene inicializarlas ahora antes de prender la paginacion
+   431 0000036A B8[00000000]                mov eax, __MMX_DATA_T1_PHI
+   432 0000036F 0FAE00                      fxsave [eax]
+   433 00000372 B8[00000000]                mov eax, __MMX_DATA_T2_PHI
+   434 00000377 0FAE00                      fxsave [eax]
+   435 0000037A B8[00000000]                mov eax, __MMX_DATA_T3_PHI
+   436 0000037F 0FAE00                      fxsave [eax]
+   437 00000382 B8[00000000]                mov eax, __MMX_DATA_T4_PHI
+   438 00000387 0FAE00                      fxsave [eax]
+   439                                  
+   440                                      ;Activo la paginacion
+   441 0000038A 55                          push ebp                        ;ENTER
+   442 0000038B 89E5                        mov ebp, esp
+   443                                  
+   444 0000038D E8(00000000)                call inicializar_paginacion
+   445 00000392 C9                          leave
+   446                                  
+   447 00000393 0F22D8                      mov cr3, eax                                                ;;Cargo el CR3 que acabo de generar en inicializar paginacion
+   448                                  
+   449 00000396 0F20C0                      mov eax, cr0
+   450 00000399 0D01000580                  or eax, X86_CR0_PG | X86_CR0_WP | X86_CR0_PE | X86_CR0_AM   ;Activo la paginacion, el Write Protect, el aligment check y la proteccion
+   451                                  
+   452 0000039E 31DB                        xor ebx, ebx
+   453 000003A0 81CB00000060                or ebx, (X86_CR0_NW | X86_CR0_CD)
+   454 000003A6 F7D3                        not ebx                                                     ;Tengo que poner en 0 los bit del Not Write Throught y Cache Disabled para habilitar la cache
+   455                                  
+   456 000003A8 21D8                        and eax, ebx                                                ;ebx voy a tener todos 1's menos en los bits CD y NW que voy a tener 0's  
+   457 000003AA 0F22C0                      mov cr0, eax
+   458                                      
+   459 000003AD 0F20E0                      mov eax, cr4
+   460 000003B0 0D80060000                  or eax, X86_CR4_OSXMMEXCPT | X86_CR4_OSFXSR | X86_CR4_PGE   ;Activo la excepcion NM cuando uso la FPU y aprovecho para activar las paginas globales
+   461 000003B5 0F22E0                      mov cr4, eax
+   462                                  
+   463                                  
+   464                                      ;seteo los id de contextos a FFFF para marcar que todavia no se ejecuto ninguna tarea
+   465 000003B8 B8[00000000]                mov eax, last_context_id
+   466 000003BD 66C700FFFF                  mov word [eax], 0xFFFF
+   467 000003C2 B8[00000000]                mov eax, actual_context_id
+   468 000003C7 66C700FFFF                  mov word [eax], 0xFFFF
+   469                                  
+   470                                  
+   471 000003CC B8[00000000]                mov eax, null_data
+   472 000003D1 C70000000000                mov dword [eax], 0x0
+   473 000003D7 C7400400000000              mov dword [eax+4], 0x0
+   474                                  
+   475 000003DE EA[00000000]0800            jmp CS_SEL_C:kernel32_init                                  ;Salto al codigo del kernel que acabo de copiar
+   476                                  
+   477                                  .guard:
+   478 000003E5 FA                          cli
+   479 000003E6 F4                          hlt 
+   480 000003E7 EBFC                        jmp .guard
+   481                                  
+   482                                  
+   483                                  configure_PIC:
+   484                                      ;ICW1 0001 0001 
+   485 000003E9 B011                        mov al, 0x11
+   486 000003EB E620                        out 0x20, al
+   487 000003ED E6A0                        out 0xA0, al
+   488                                  
+   489                                      ;ICW2 
+   490 000003EF B020                        mov al,0x20
+   491 000003F1 E621                        out 0x21, al
+   492                                  
+   493 000003F3 B028                        mov al, 0x28
+   494 000003F5 E6A1                        out 0xA1, al
+   495                                  
+   496                                      ;ICW3
+   497 000003F7 B004                        mov al, 0x04
+   498 000003F9 E621                        out 0x21, al
+   499                                  
+   500 000003FB B002                        mov al, 0x02
+   501 000003FD E6A1                        out 0xA1, al
+   502                                  
+   503                                      ;ICW4
+   504 000003FF B001                        mov al, 0x01
+   505 00000401 E621                        out 0x21, al
+   506 00000403 E6A1                        out 0xA1, al
+   507                                  
+   508                                      ;Activo la int del teclado y del timer tick
+   509 00000405 B0FC                        mov al, 11111100b
+   510 00000407 E621                        out 0x21, al
+   511                                  
+   512                                      ;Enmascaro las otras ints
+   513 00000409 B0FF                        mov al, 0xFF
+   514 0000040B E6A1                        out 0xA1, al
+   515                                  
+   516                                      ;Configuro el timer tick
+   517                                      ;Freq = 1.193182 MHz
+   518                                      ;Si quiero configurarlo para tener una interrupcion cada 10ms tengo que contar 10ms * 1.193182MHz = 11931.85 cuentas.. 
+   519                                      ;11932 = 0x2E9C
+   520                                      
+   521                                  
+   522 0000040D B034                        mov al,00110100b               ;channel 0, lobyte/hibyte, rate generator
+   523 0000040F E643                        out 0x43, al
+   524                                  
+   525 00000411 66B89C2E                    mov ax, 0x2E9C                 ;Cargo en AX el valor de recarga
+   526 00000415 E640                        out 0x40,al                    ;Mando al PIT los bits menos significativos
+   527 00000417 88E0                        mov al,ah                      ;paso los bits mas significativos a al
+   528 00000419 E640                        out 0x40,al                    ;Mando al pit los bits mas significativos que tengo cargados en al
+   529                                  
+   530 0000041B C3                          ret
+   531                                  
+   532                                  
+   533                                  section .kernel32
+   534                                  
+   535                                  kernel32_init:
+   536                                  
+   537 00000000 E8(00000000)                call clear                      ;Inicializo la pantalla y borro
+   538 00000005 E8(00000000)                call init_keyboard              ;inicializo el teclado
+   539 0000000A E8(00000000)                call inicializar_scheduler      ;Inicializo el scheduler
+   540 0000000F FB                          sti                             ;Habilito las interrupciones para poner en marcha el timer tick
+   541                                  kernel32_loop:
+   542 00000010 F4                          hlt
+   543 00000011 EBFD                        jmp kernel32_loop               ;Bucle eterno hasta que me desconecten
+   544                                  
+   545                                  
+   546                                  section .functions_ram
+   547                                  
+   548                                  save_context:
+   549 00000000 8B442404                    mov eax, [esp+4]            ;Direccion base del contexto parametro pasado por pila
+   550                                      
+   551 00000004 8B542434                    mov edx, [esp+52]           ;;ESI
+   552 00000008 895010                      mov [eax+16], edx
+   553 0000000B 8B542438                    mov edx, [esp+56]           ;;EDI
+   554 0000000F 895014                      mov [eax+20], edx
+   555 00000012 8B54243C                    mov edx, [esp+60]           ;;EDX
+   556 00000016 89500C                      mov [eax+12], edx
+   557 00000019 8B542440                    mov edx, [esp+64]           ;;ECX
+   558 0000001D 895008                      mov [eax+8], edx
+   559 00000020 8B542444                    mov edx, [esp+68]           ;;EBX
+   560 00000024 895004                      mov [eax+4], edx
+   561 00000027 8B542448                    mov edx, [esp+72]           ;;EAX
+   562 0000002B 8910                        mov [eax], edx
+   563                                  
+   564 0000002D 668B54246C                  mov dx, [esp+108]  ;;CS      ;Guardo los selectores en el contexto
+   565 00000032 6689501C                    mov [eax+28], dx
+   566 00000036 668CDA                      mov dx, ds 
+   567 00000039 6689501E                    mov [eax+30], dx
+   568 0000003D 668CC2                      mov dx, es 
+   569 00000040 66895020                    mov [eax+32], dx
+   570 00000044 668CE2                      mov dx, fs 
+   571 00000047 66895022                    mov [eax+34], dx
+   572 0000004B 668CEA                      mov dx, gs 
+   573 0000004E 66895024                    mov [eax+36], dx
+   574                                  
+   575 00000052 8B542464                    mov edx, [esp+100]           ;;EBP
+   576 00000056 895018                      mov [eax+24], edx           ;guardo el ebp
+   577                                  
+   578 00000059 89E2                        mov edx, esp                 ;La pila actual es la de nivel 0
+   579 0000005B 83C274                      add edx, 116                 ;Guardo la posicion de la pila sin ningun registro pusheado ya que cuando levante el contexto le voy a pushear todos los datos y las direcciones de retorno.
+   580 0000005E 895028                      mov [eax+40], edx
+   581                                  
+   582 00000061 668CD2                      mov dx, ss
+   583 00000064 66895026                    mov [eax+38], dx
+   584                                  
+   585 00000068 0F20DA                      mov edx, cr3                ;Guardo la paginacion de la tarea actual
+   586 0000006B 895034                      mov [eax+52], edx           ;aunque no seria necesario ya que el cr3 no deberia cambiar
+   587                                  
+   588 0000006E 8B542468                    mov edx, [esp+104]           ;;EIP
+   589 00000072 895038                      mov [eax+56], edx
+   590                                  
+   591 00000075 8B542470                    mov edx, [esp+112]           ;;EFLAGS
+   592 00000079 89503C                      mov [eax+60], edx
+   593                                  
+   594                                      ;Save context se da en la situacion de una tarea que estaba ejecutandose y la estoy a punto de sacar de ejecucion
+   595                                      ;Miro el flag_mmx, si esta en 1 es porque durante su ejecucion utilizo la FPU y en el handler de la excepcion NM restauro su contexto 
+   596                                      ;Entonces ahora que estoy a punto de desalojarla del micro guardo su contexto
+   597                                      ;Despues de guardar el contexto bajo el flag porque de esta manera si en el proximo ciclo de ejecucion de casualidad no usa la FPU entonces me salto la parte de guardar el contexto de mmx
+   598 0000007C 8B5044                      mov edx, [eax+68]           ;Leo el flag_mmx           
+   599 0000007F 83FA01                      cmp edx, 0x01               ;si es 1 es porque use la FPU 
+   600 00000082 750F                        jne fin_save_context
+   601                                  
+   602 00000084 0F06                        clts                        ;por las dudas limpio el flag, no sea cosa que me haya quedado arriba y salta la excepcion NM
+   603                                  
+   604 00000086 BA[00000000]                mov edx, mmx_context_data
+   605 0000008B 0FAE02                      fxsave [edx]  
+   606 0000008E 31D2                        xor edx, edx
+   607 00000090 895044                      mov dword [eax+68], edx           ;Pongo el flag en 0
+   608                                  
+   609                                  fin_save_context:
+   610 00000093 C3                          ret
+   611                                  
+   612                                  load_context:
+   613 00000094 8B542408                    mov edx, [esp+8]            ;CR3 pasado por parametro
+   614 00000098 8B442404                    mov eax, [esp+4]            ;Direccion base del contexto parametro pasado por pila
+   615                                      
+   616                                      
+   617                                      ;;Rescato los valores importantes de la pila para recargar los registros de proposito general que pushie en la pila al inicio del pit0
+   618                                      ;;La idea es que cuando termine el pit0 recupere estos valores en los registro EAX--ESI
+   619                                  
+   620 0000009C 5B                          pop ebx ;; EIP que devuelve a change context
+   621                                  
+   622 0000009D 83C428                      add esp,40    ;;Me salto las variables locales reservadas por el gcc
+   623 000000A0 59                          pop ecx ;; (EBP)
+   624                                  
+   625                                  
+   626 000000A1 5F                          pop edi ;; EIP que devuelve al pit0
+   627                                  
+   628                                  
+   629 000000A2 83C430                      add esp, 48  ;;Me salto los registro de proposito general de la tarea anterior que estaban salvados en la pila.
+   630                                  
+   631 000000A5 5E                          pop esi ;; EBP
+   632                                  
+   633 000000A6 83C40C                      add esp, 12  ;;Me salto los registro del iret viejos
+   634                                  
+   635                                      ;mov edx, esp                ;La pila actual es la de nivel 0
+   636                                      ;mov [eax+40], edx
+   637                                  
+   638                                      ;mov dx, ss
+   639                                      ;mov [eax+38], dx
+   640                                  
+   641                                  
+   642                                  
+   643                                      ;Primero que nada cambio el cr3 porque sino no puedo acceder al contexto de la tarea ya que la pagina donde guardo el contexto solo la tengo paginada en cada tarea
+   644                                      ;;Ahora que vacie la pila hago el cambio de cr3
+   645 000000A9 0F22DA                      mov cr3, edx
+   646                                  
+   647 000000AC 668B501E                    mov dx, [eax+30]            ;cargo los selectores en el contexto
+   648 000000B0 8EDA                        mov ds, dx 
+   649 000000B2 668B5020                    mov dx, [eax+32]
+   650 000000B6 8EC2                        mov es, dx 
+   651 000000B8 668B5022                    mov dx, [eax+34]
+   652 000000BC 8EE2                        mov fs, dx 
+   653 000000BE 668B5024                    mov dx, [eax+36]
+   654 000000C2 8EEA                        mov gs, dx
+   655                                  
+   656                                      ;Levanto el flag de task switch
+   657 000000C4 0F20C2                      mov edx, cr0
+   658 000000C7 83F208                      xor edx, X86_CR0_TS
+   659 000000CA 0F22C2                      mov cr0, edx
+   660                                  
+   661                                      ;;Reconstruyo la pila para la nueva tarea
+   662                                      ;Primero me traigo la pila del contexto
+   663 000000CD 31D2                        xor edx, edx
+   664 000000CF 668B5026                    mov dx, [eax+38]
+   665 000000D3 8ED2                        mov ss, dx
+   666                                  
+   667 000000D5 8B5028                      mov edx, [eax+40]
+   668 000000D8 89D4                        mov esp, edx                ;Traigo la pila nivel 0 del contexto
+   669                                      
+   670                                      ;;Ahora voy a restaurar el contexto para cargar, Podria estar en la situacion que tengo salto de nivel o que el cambio de contexto vino desde la syscall por ende tengo que volver sin cambio de prioridad
+   671 000000DA 31D2                        xor edx, edx
+   672 000000DC 668B501C                    mov dx, [eax+28]           ;;CS a donde tengo que hacer el iret del SYSTICK
+   673 000000E0 66F7C20800                  test dx, CS_SEL_C
+   674 000000E5 7520                        jnz .sin_cambio_pl          ;;  Si no es igual al CS de nivel cero entonces estoy en la situacion de cambio de privilegio
+   675                                  
+   676                                  
+   677                                      ;Ahora que tengo la pila correcta le cargo los valores, algunos desde el contexto y otros desde los valores de ejecucion como los eip de retorno que estaban en la pila
+   678 000000E7 31D2                        xor edx, edx
+   679 000000E9 668B502C                    mov dx, [eax+44]
+   680 000000ED 6683CA03                    or dx, 0x3                  ;;Seteo el RPL en nivel 3
+   681 000000F1 52                          push edx                    ;;SS nivel 3
+   682                                  
+   683 000000F2 8B5030                      mov edx, [eax+48]
+   684 000000F5 52                          push edx                    ;;ESP nivel 3
+   685                                          
+   686 000000F6 8B503C                      mov edx, [eax+60]           ;;EFLAGS
+   687 000000F9 52                          push edx
+   688                                  
+   689 000000FA 31D2                        xor edx, edx
+   690 000000FC 668B501C                    mov dx, [eax+28]           ;;CS
+   691 00000100 6683CA03                    or dx, 0x3                  ;;Seteo el RPL en nivel 3
+   692 00000104 52                          push edx
+   693 00000105 EB0B                        jmp .end_cs
+   694                                  
+   695                                  .sin_cambio_pl:
+   696                                  
+   697 00000107 8B503C                      mov edx, [eax+60]           ;;EFLAGS
+   698 0000010A 52                          push edx
+   699                                  
+   700 0000010B 31D2                        xor edx, edx
+   701 0000010D 668B501C                    mov dx, [eax+28]           ;;Pusheo el CS sin cambio de privilegio
+   702 00000111 52                          push edx
+   703                                  
+   704                                  
+   705                                  .end_cs:    
+   706 00000112 8B5038                      mov edx, [eax+56]           ;;EIP
+   707 00000115 52                          push edx
+   708                                  
+   709 00000116 8B5018                      mov edx, [eax+24]           ;;EBP
+   710 00000119 52                          push edx                ;guardo el ebp
+   711                                  
+   712 0000011A 83EC18                      sub esp,0x18            ;;Variables locales de pit0
+   713                                  
+   714 0000011D 8B10                        mov edx, [eax]           ;;EAX
+   715 0000011F 52                          push edx
+   716                                  
+   717 00000120 8B5004                      mov edx, [eax+4]           ;;EBX
+   718 00000123 52                          push edx
+   719                                  
+   720 00000124 8B5008                      mov edx, [eax+8]           ;;ECX
+   721 00000127 52                          push edx
+   722                                  
+   723 00000128 8B500C                      mov edx, [eax+12]           ;;EDX
+   724 0000012B 52                          push edx
+   725                                  
+   726 0000012C 8B5014                      mov edx, [eax+20]           ;;EDI
+   727 0000012F 52                          push edx
+   728                                  
+   729 00000130 8B5010                      mov edx, [eax+16]           ;;ESI
+   730 00000133 52                          push edx
+   731                                  
+   732 00000134 57                          push edi ;; EIP que devuelve al pit0
+   733                                  
+   734                                      ;Ahora me toca cargar el EBP que pusheo cuando entro a change context.
+   735                                      ;Este valor es el que va a cargar en el ESP cuando haga el leave
+   736                                      ;es por esto que lo calculo segun el nuevo esp ya que este valor no lo tengo resguardado en ningun lado
+   737                                      ;cabe aclarar que las variables locales de los procesos padre no son validas ya que las variables locales se guardan en la pila
+   738                                      
+   739                                      ;El ebp de la pila depende de si hay cambio de privilegio o no
+   740 00000135 31D2                        xor edx, edx
+   741 00000137 668B501C                    mov dx, [eax+28]           ;;CS a donde tengo que hacer el iret del SYSTICK
+   742 0000013B 66F7C20800                  test dx, CS_SEL_C
+   743 00000140 7509                        jnz .ebp_sin_cambio_pl          ;;  Si no es igual al CS de nivel cero entonces estoy en la situacion de cambio de privilegio
+   744                                      
+   745 00000142 8B5028                      mov edx, [eax+40]
+   746 00000145 83EA18                      sub edx, 0x18 
+   747 00000148 52                          push edx   ;; EBP reconstruido segun la nueva pila
+   748 00000149 EB07                        jmp .end_ebp
+   749                                  
+   750                                  .ebp_sin_cambio_pl:
+   751                                      
+   752 0000014B 8B5028                      mov edx, [eax+40]
+   753 0000014E 83EA10                      sub edx, 0x10 
+   754 00000151 52                          push edx   ;; EBP reconstruido segun la nueva pila
+   755                                  
+   756                                  .end_ebp:
+   757                                      
+   758                                      ;emulo que lo hubiese hecho el gcc en la entrada a la funcion
+   759 00000152 89E5                        mov ebp, esp
+   760                                   
+   761 00000154 83EC28                      sub esp,0x28    ;;Variables locales de change context
+   762                                      ;push ecx ;; CS que devuelve a change context
+   763 00000157 53                          push ebx ;; EIP que devuelve a change context
+   764                                  
+   765                                      ;cambio el id del proceso actual
+   766 00000158 668B5040                    mov dx, [eax+64]           ;;context id
+   767 0000015C 668915[00000000]            mov word [actual_context_id], dx
+   768                                  
+   769                                      ;Actualizo el ESP0 y el SS0 en la trueTSS
+   770 00000163 BA[00000000]                mov edx, trueTSS
+   771 00000168 83C204                      add edx, 4
+   772 0000016B 8B5828                      mov ebx, [eax+40]
+   773 0000016E 81CBFF0F0000                or ebx, 0xFFF           ;Me voy a la base de la pila
+   774 00000174 891A                        mov dword [edx], ebx   ;Cargo el ESP0 en la trueTSS
+   775 00000176 83C204                      add edx, 4
+   776 00000179 668B5826                    mov bx, [eax+38]
+   777 0000017D 66891A                      mov word [edx], bx    ;Cargo el SS0 en la trueTSS
+   778 00000180 C3                          ret
